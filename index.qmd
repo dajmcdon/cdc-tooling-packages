@@ -1,7 +1,7 @@
 ---
 format: 
   revealjs:
-    footer: "Title --- [cmu-delphi.github.io/repo-name]{.smaller}"
+    footer: "Packages for forecasting --- [cmu-delphi.github.io/cste-forecast-workshop-2023]{.smaller}"
     logo: "gfx/delphi.jpg"
     embed-resources: true
     width: 1280
@@ -63,26 +63,74 @@ ggplot(snapshots_all %>%
 
 :::
 ::: {.column width="80%"}
-## Title {background-image="index_files/figure-revealjs/cover-art-1.svg" background-position="bottom"}
+##  `{epiprocess}` and `{epipredict}` {background-image="index_files/figure-revealjs/cover-art-1.svg" background-position="bottom"}
 
-### Subtitle
+### `R` packages for signal processing and forecasting
 
 <br>
 
-#### Authors
+#### Daniel J. McDonald and Logan C. Brooks
 #### and CMU's Delphi Group
 
-Talk Venue --- Date
+CSTE Workshop on Infectious Disease Forecasting --- 25 June 2023
 :::
 ::::
 
 ## Slides begin
+
+- [ ] (we assume successful installation, R fluency)
+- [ ] (we emphasize pictures / code over longwinded text / bullets)
+
+
+## Rough ToC
+
+### 30 minutes of presentation
+- [ ] Why are we building this?
+- [ ] Data formats (why these? who cares about versions?)
+- [ ] Signal processing operations: Give a bunch of examples, but focus on 2 (perhaps "latency/reporting investigation" and "outlier detection+correction")
+- [ ] Forecasting in practice (easily incorporate new data sources, forecasts of many horizons, many jurisdictions, ease of QC, compare to baselines, backtesting)
+- [ ] Simple AR-type Forecasters and Classifiers
+
+## Rough ToC (continued)
+
+### 30 minutes of exercise
+
+* Take data from 2-3 sources available across jurisdictions
+* Investigate leadingness of some signals
+* Implement a forecaster:
+    - Normalize by population, 
+    - other preprocessing? (perhaps 7dav, sensorization?)
+    - choose some lags to use
+    - Compare a couple of engines
+    - visualize the output
+    
+    
 
 ## Callouts
 
 ::: {.callout-note}
 You can use these. See <https://quarto.org/docs/authoring/callouts.html>
 :::
+
+## Some code with highlights
+
+```{r}
+#| echo: true
+#| eval: false
+#| code-line-numbers: "|4|5|7|8|9|10"
+rf <- arx_forecaster(
+  epi_data = jhu, 
+  outcome = "death_rate", 
+  predictors = c("case_rate", "death_rate", "fb-survey"),
+  trainer = parsnip::rand_forest(mode = "regression"), # use ranger
+  args_list = arx_args_list(
+    ahead = 14, # 2-week horizon
+    lags = list(c(0:4, 7, 14), c(0, 7, 14), c(0:7, 14)), # bunch of lags
+    levels = c(0.01, 0.025, 1:19/20, 0.975, 0.99), # 23 ForecastHub quantiles
+    quantile_by_key = "geo_value" # vary q-forecasts by location
+  )
+)
+```
 
 ## Final slide {.smaller}
 

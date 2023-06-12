@@ -36,12 +36,12 @@
 <clipPath id="clip1">
   <path d="M 195 29.238281 L 525 29.238281 L 525 360 L 195 360 Z M 195 29.238281 "/>
 </clipPath>
-<image id="image19" width="35" height="35" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAIAAACRuyQOAAAABmJLR0QA/wD/AP+gvaeTAAABe0lEQVRIid1Xy47EMAiD1f7/L2cPlahjG9KVRj0Mh2qaBMzD0EyuteIV+XkH5lWk3/qVmbq91spMetrz1661wEi4irbKxGCotqwFg2R1aAWVdWVA/V+dCKaCfqLLMVlB3+s3pvQJGCOpjsKE5BaZ0qFuSLbmZaXjIbLOWmCkzhcbpWXjnMObEQmCDqq/6jiFRVVkpEpFKZCP+IqH0W6VU+NLMm2fmgpjaPdMOcnThbpk7lP10q63SGpOnbB4Q0AbErlmu5Us1vpw2EzYblorEeokYg+ddAnPPTRxUci2zgVG9dDIPCNmvygay0xCIjb6uUepp137YcTgKLG3cgU+DyTtR9SyfY3iZwSZtonSpraj4Q53aOyZvgjwZI5woo0vUgx0K6T43YBvT/C53ZZqERsP3FMiza9IRVUnsPPdKKIdH92MsJU7342672EI2ezIKHl0NwogHgY3lFZ5dL4boZux91bHJjtBznejgLFbmpZ7s7vnfvqUfOP/pz/zYyInPvLhBQAAAABJRU5ErkJggg=="/>
+<image id="image34" width="35" height="35" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAIAAACRuyQOAAAABmJLR0QA/wD/AP+gvaeTAAABe0lEQVRIid1Xy47EMAiD1f7/L2cPlahjG9KVRj0Mh2qaBMzD0EyuteIV+XkH5lWk3/qVmbq91spMetrz1661wEi4irbKxGCotqwFg2R1aAWVdWVA/V+dCKaCfqLLMVlB3+s3pvQJGCOpjsKE5BaZ0qFuSLbmZaXjIbLOWmCkzhcbpWXjnMObEQmCDqq/6jiFRVVkpEpFKZCP+IqH0W6VU+NLMm2fmgpjaPdMOcnThbpk7lP10q63SGpOnbB4Q0AbErlmu5Us1vpw2EzYblorEeokYg+ddAnPPTRxUci2zgVG9dDIPCNmvygay0xCIjb6uUepp137YcTgKLG3cgU+DyTtR9SyfY3iZwSZtonSpraj4Q53aOyZvgjwZI5woo0vUgx0K6T43YBvT/C53ZZqERsP3FMiza9IRVUnsPPdKKIdH92MsJU7342672EI2ezIKHl0NwogHgY3lFZ5dL4boZux91bHJjtBznejgLFbmpZ7s7vnfvqUfOP/pz/zYyInPvLhBQAAAABJRU5ErkJggg=="/>
 </defs>
-<g id="surface15">
+<g id="surface30">
 <rect x="0" y="0" width="720" height="360" style="fill:rgb(100%,100%,100%);fill-opacity:1;stroke:none;"/>
 <g clip-path="url(#clip1)" clip-rule="nonzero">
-<use xlink:href="#image19" transform="matrix(9.450358,0,0,9.450358,194.618735,29.23747)"/>
+<use xlink:href="#image34" transform="matrix(9.450358,0,0,9.450358,194.618735,29.23747)"/>
 </g>
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
   <use xlink:href="#glyph0-1" x="300.558594" y="24.460938"/>

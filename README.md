@@ -1,4 +1,6 @@
-# Talk template repo
+# CSTE 2023 Annual Conference
+
+## Slides for Infectious Disease Forecasting Workshop
 
 This template can be used to create talks with a template that looks something
 like:
