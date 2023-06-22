@@ -175,9 +175,9 @@ A very specialized plug-in to [`{tidymodels}`](https://tidymodels.org)
 ## Making dumb (but useful!) forecasts in epidemiology
 
 * We want to predict 
-    - new hospitalizations $y$, 
-    - $h$ days ahead, 
-    - at many locations $j$.
+  - new hospitalizations $y$, 
+  - $h$ days ahead, 
+  - at many locations $j$.
 
 * We're going to make a new forecast each week.
 
