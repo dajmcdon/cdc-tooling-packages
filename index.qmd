@@ -457,7 +457,7 @@ preds <- trained_ewf %>% predict(new_data = latest)
 
 ## Visualize a result for 1 forecast date, 1 location
 
-```{r, fig.align='center', fig.width=9}
+```{r, fig.align='center', fig.width=10}
 #| echo: true
 #| code-fold: true
 fd <- as.Date("2021-11-30")
