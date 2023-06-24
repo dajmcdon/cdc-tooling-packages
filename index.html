@@ -413,14 +413,16 @@
 </section>
 <section id="background" class="slide level2">
 <h2>Background</h2>
+<div>
 <ul>
-<li><p>Covid-19 Pandemic required quickly implementing forecasting systems.</p></li>
-<li><p>Basic processing—<span class="primary">outlier detection</span>, <span class="secondary">reporting issues</span>, <span class="tertiary">geographic granularity</span>—implemented in parallel / error prone</p></li>
-<li><p>Data revisions complicate evaluation</p></li>
-<li><p>Simple models often outperformed complicated ones</p></li>
-<li><p>Custom software not easily adapted / improved by other groups</p></li>
-<li><p>Hard for public health actors to borrow / customize community techniques</p></li>
+<li class="fragment">Covid-19 Pandemic required quickly implementing forecasting systems.</li>
+<li class="fragment">Basic processing—<span class="primary">outlier detection</span>, <span class="secondary">reporting issues</span>, <span class="tertiary">geographic granularity</span>—implemented in parallel / error prone</li>
+<li class="fragment">Data revisions complicate evaluation</li>
+<li class="fragment">Simple models often outperformed complicated ones</li>
+<li class="fragment">Custom software not easily adapted / improved by other groups</li>
+<li class="fragment">Hard for public health actors to borrow / customize community techniques</li>
 </ul>
+</div>
 </section>
 <section id="packages-under-development" class="slide level2">
 <h2>Packages under development</h2>
@@ -448,7 +450,7 @@
 <h2>Basic processing operations and data structures</h2>
 <div>
 <ul>
-<li class="fragment">General EDA for “panel data”</li>
+<li class="fragment">General EDA for panel data</li>
 <li class="fragment">Calculate rolling statistics</li>
 <li class="fragment">Fill / impute gaps</li>
 <li class="fragment">Examine correlations</li>
@@ -478,7 +480,9 @@
 </div>
 </div>
 </div>
-<h3 id="epi_df-snapshot-of-a-data-set-1"><code>epi_df</code>: snapshot of a data set</h3>
+</section>
+<section id="epi_df-snapshot-of-a-data-set-1" class="slide level2">
+<h2><code>epi_df</code>: snapshot of a data set</h2>
 <div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-4_8fa57b993ff89cfccc4333376333d120">
 <div class="cell-output cell-output-stdout">
 <pre><code>An `epi_df` object, 20,496 x 4 with metadata:
@@ -599,32 +603,29 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <h1><code>{epipredict}</code></h1>
 <p><span class="primary">A forecasting framework</span></p>
 </section>
-<section id="epipredict-1" class="slide level2">
-<h2><code>{epipredict}</code></h2>
-<h3 id="building-up-modular-components.">Building up modular components.</h3>
+<section id="philosophy-of-forecasting" class="slide level2">
+<h2>Philosophy of forecasting</h2>
+<div class="fragment fade-in-then-semi-out">
+<p>We should build up modular components</p>
+<p>Be able to add layers sequentially</p>
+</div>
+<div class="fragment fade-in-then-semi-out">
 <ol type="1">
 <li><span class="primary">Preprocessor:</span> do things to the data before model training</li>
 <li><span class="primary">Trainer:</span> train a model on data, resulting in an object</li>
 <li><span class="primary">Predictor:</span> make predictions, using a fitted model object</li>
 <li><span class="primary">Postprocessor:</span> do things to the predictions before returning</li>
 </ol>
-<div class="callout callout-important no-icon callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<p><strong></strong></p>
 </div>
-<div class="callout-content">
+<div class="fragment fade-in">
 <p>A very specialized plug-in to <a href="https://tidymodels.org"><code>{tidymodels}</code></a></p>
 </div>
-</div>
-</div>
 </section>
-<section id="epipredict-2" class="slide level2">
+<section id="epipredict-1" class="slide level2">
 <h2><code>{epipredict}</code></h2>
 <div>
 <ul>
-<li class="fragment">Flatline forecaster</li>
-<li class="fragment">AR-type models</li>
+<li class="fragment">Canned forecasters that work out-of-the-box</li>
 <li class="fragment">Backtest using the versioned data</li>
 <li class="fragment">Easily create features</li>
 <li class="fragment">Modify / transform / calibrate forecasts</li>
@@ -648,27 +649,30 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <h2>Canned forecasters that work out of the box.</h2>
 <p>But, you can adjust <span class="secondary">a lot</span> of options</p>
 <h3 id="making-dumb-but-useful-forecasts-in-epidemiology">Making dumb (but useful!) forecasts in epidemiology</h3>
+<div>
 <ul>
-<li>We want to predict
+<li class="fragment"><p>On day <span class="math inline">\(t\)</span></p></li>
+<li class="fragment"><p>We want to predict</p>
 <ul>
-<li>new hospitalizations <span class="math inline">\(y\)</span>,</li>
-<li><span class="math inline">\(h\)</span> days ahead,</li>
-<li>at many locations <span class="math inline">\(j\)</span>.</li>
+<li class="fragment">new hospitalizations <span class="math inline">\(y\)</span>,</li>
+<li class="fragment"><span class="math inline">\(h\)</span> days ahead,</li>
+<li class="fragment">at many locations <span class="math inline">\(j\)</span>.</li>
 </ul></li>
-<li>We’re going to make a new forecast each week.</li>
+<li class="fragment"><p>We’re going to make a new forecast each week.</p></li>
 </ul>
+</div>
 </section>
 <section id="canned-forecasters-that-work-out-of-the-box.-2" class="slide level2">
 <h2>Canned forecasters that work out of the box.</h2>
 <p>But, you can adjust <span class="secondary">a lot</span> of options</p>
 <h3 id="flatline-forecaster">Flatline forecaster</h3>
-<p>For each location, predict <span class="math display">\[\hat{y}_{j,\ i+h} = y_{j,\ i}\]</span></p>
+<p>For each location, predict <span class="math display">\[\hat{y}_{j,\ t+h} = y_{j,\ t}\]</span></p>
 </section>
 <section id="canned-forecasters-that-work-out-of-the-box.-3" class="slide level2">
 <h2>Canned forecasters that work out of the box.</h2>
 <p>But, you can adjust <span class="secondary">a lot</span> of options</p>
 <h3 id="ar-forecaster">AR forecaster</h3>
-<p>Use an AR model with an extra feature, e.g.: <span class="math display">\[\hat{y}_{j,\ i+h} = \mu + a_0 y_{j,\ i} + a_7 y_{j,\ i-7} + b_0 x_{j,\ i} + b_7 x_{j,\ i-7}\]</span></p>
+<p>Use an AR model with an extra feature, e.g.: <span class="math display">\[\hat{y}_{j,\ t+h} = \mu + a_0 y_{j,\ t} + a_7 y_{j,\ t-7} + b_0 x_{j,\ t} + b_7 x_{j,\ t-7}\]</span></p>
 </section>
 <section id="basic-autoregressive-forecaster" class="slide level2">
 <h2>Basic autoregressive forecaster</h2>
@@ -753,12 +757,23 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <li>National Sciences and Engineering Research Council of Canada</li>
 </ul>
 </div><div class="column" style="width:50%;">
-<p><img data-src="gfx/qr-epiprocess.png" width="300"> <img data-src="gfx/qr-epipredict.png" width="300"> <img data-src="gfx/qr-tooling-book.png" width="300"> <img data-src="gfx/qr-this-talk.png" width="300"></p>
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-15_3f27fed91674466f5f53beb2d0264165">
+<div class="cell-output-display">
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-15-1.png"></p>
+</div>
+</div>
 </div>
 </div>
 <div data-layout-row="1" data-fig-align="center">
 <p><img data-src="gfx/delphi.jpg" height="100"> <img data-src="gfx/berkeley.jpg" height="100"> <img data-src="gfx/cmu.jpg" height="100"> <img data-src="gfx/ubc.jpg" width="250"> <img data-src="gfx/usc.jpg" width="250"> <img data-src="gfx/stanford.jpg" width="250"></p>
 </div>
+</section>
+<section id="software-demo-worksheet" class="slide level2">
+<h2>Software demo / worksheet</h2>
+<div class="r-fit-text">
+<p><a href="https://github.com/cmu-delphi/cste-forecast-workshop-2023/" class="uri">https://github.com/cmu-delphi/cste-forecast-workshop-2023/</a></p>
+</div>
+<img data-src="gfx/qr-this-talk.png" class="r-stretch">
 <p><img src="gfx/delphi.jpg" class="slide-logo"></p>
 <div class="footer footer-default">
 <p>Packages for forecasting — <span class="smaller">cmu-delphi.github.io/cste-forecast-workshop-2023</span></p>

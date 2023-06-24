@@ -81,18 +81,16 @@ CSTE Workshop on Infectious Disease Forecasting --- 25 June 2023
 
 ## Background
 
+::: {.incremental}
+
 * Covid-19 Pandemic required quickly implementing forecasting systems.
-
 * Basic processing---[outlier detection]{.primary}, [reporting issues]{.secondary}, [geographic granularity]{.tertiary}---implemented in parallel / error prone
-
 * Data revisions complicate evaluation
-
 * Simple models often outperformed complicated ones
-
 * Custom software not easily adapted / improved by other groups
-
 * Hard for public health actors to borrow / customize community techniques
 
+:::
 
 
 ## Packages under development
@@ -114,7 +112,7 @@ flowchart LR
 
 ::: {.incremental}
 
-* General EDA for "panel data"
+* General EDA for panel data
 * Calculate rolling statistics
 * Fill / impute gaps
 * Examine correlations
@@ -137,7 +135,7 @@ Represents a [snapshot]{.primary} that
 contains the most [up-to-date values]{.primary} of the signal variables, [as of]{.primary} a given time.
 :::
 
-### `epi_df`: snapshot of a data set
+## `epi_df`: snapshot of a data set
 
 ```{r}
 edf <- case_death_rate_subset
@@ -287,18 +285,27 @@ hhs_na0_latency %>%
 # `{epipredict}`
 [A forecasting framework]{.primary}
 
-## `{epipredict}`
-### Building up modular components.
+## Philosophy of forecasting 
+
+::: {.fragment .fade-in-then-semi-out}
+
+We should build up modular components
+
+Be able to add layers sequentially
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
 
 1. [Preprocessor:]{.primary} do things to the data before model training
 2. [Trainer:]{.primary} train a model on data, resulting in an object
 3. [Predictor:]{.primary} make predictions, using a fitted model object
 4. [Postprocessor:]{.primary} do things to the predictions before returning
 
+:::
 
-::: {.callout-important icon=false}
-##
 
+::: {.fragment .fade-in}
 A very specialized plug-in to [`{tidymodels}`](https://tidymodels.org)
 :::
 
@@ -307,8 +314,7 @@ A very specialized plug-in to [`{tidymodels}`](https://tidymodels.org)
 
 ::: {.incremental}
 
-* Flatline forecaster
-* AR-type models
+* Canned forecasters that work out-of-the-box
 * Backtest using the versioned data
 * Easily create features
 * Modify / transform / calibrate forecasts 
@@ -334,6 +340,10 @@ But, you can adjust [a lot]{.secondary} of options
 
 ### Making dumb (but useful!) forecasts in epidemiology
 
+::: {.incremental}
+
+* On day $t$
+
 * We want to predict 
   - new hospitalizations $y$, 
   - $h$ days ahead, 
@@ -341,6 +351,7 @@ But, you can adjust [a lot]{.secondary} of options
 
 * We're going to make a new forecast each week.
 
+:::
 
 ## Canned forecasters that work out of the box.
 
@@ -349,7 +360,7 @@ But, you can adjust [a lot]{.secondary} of options
 ### Flatline forecaster
 
 For each location, predict 
-$$\hat{y}_{j,\ i+h} = y_{j,\ i}$$
+$$\hat{y}_{j,\ t+h} = y_{j,\ t}$$
 
 ## Canned forecasters that work out of the box.
 
@@ -358,7 +369,7 @@ But, you can adjust [a lot]{.secondary} of options
 ### AR forecaster
 
 Use an AR model with an extra feature, e.g.:
-$$\hat{y}_{j,\ i+h} = \mu + a_0 y_{j,\ i} + a_7 y_{j,\ i-7} + b_0 x_{j,\ i} + b_7 x_{j,\ i-7}$$
+$$\hat{y}_{j,\ t+h} = \mu + a_0 y_{j,\ t} + a_7 y_{j,\ t-7} + b_0 x_{j,\ t} + b_7 x_{j,\ t-7}$$
 
 
 
@@ -490,10 +501,15 @@ ggsave(plot = plot_qr(qr4, "This talk"), "gfx/qr-this-talk.png")
 
 ::: {.column width="50%"}
 
-![](gfx/qr-epiprocess.png){width="300px"}
-![](gfx/qr-epipredict.png){width="300px"}
-![](gfx/qr-tooling-book.png){width="300px"}
-![](gfx/qr-this-talk.png){width="300px"}
+```{r, dev='png'}
+cowplot::plot_grid(
+  plot_qr(qr1, "{epipredict}"),
+  plot_qr(qr2, "{epiprocess}"),
+  plot_qr(qr3, "Tooling book"),
+  plot_qr(qr4, "This talk"),
+  nrow = 2
+)
+```
 
 :::
 
@@ -508,4 +524,14 @@ ggsave(plot = plot_qr(qr4, "This talk"), "gfx/qr-this-talk.png")
 ![](gfx/stanford.jpg){width="250px"}
 :::
 
+## Software demo / worksheet
+
+::: {.r-fit-text}
+
+<https://github.com/cmu-delphi/cste-forecast-workshop-2023/>
+
+:::
+
+
+![](gfx/qr-this-talk.png){.r-stretch}
 
