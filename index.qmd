@@ -247,6 +247,13 @@ There are (lots) of possible definitions.
 ## Latency investigation
 
 ```{r}
+#| echo: false
+#| eval: false
+hhs_flu_hosp_archive <- readRDS(here::here("data", "hhs_flu_hosp_dt.rds")) %>%
+  as_epi_archive(compactify = TRUE)
+```
+
+```{r}
 #| eval: false
 #| echo: true
 #| code-line-numbers: "|5|6|8-9|14"
@@ -271,7 +278,7 @@ hhs_flu_hosp_archive %>%
 ## Latency investigation, > 2 days
 
 ```{r, dev = "png"}
-hhs_na0_latency <- readRDS("hhs_na0_latency.rds")
+hhs_na0_latency <- readRDS(here::here("data", "hhs_na0_latency.rds"))
 hhs_na0_latency %>%
   mutate(na0_latency = case_when(
     na0_latency <= 2 ~ NA,

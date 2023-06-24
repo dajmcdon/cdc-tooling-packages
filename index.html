@@ -580,7 +580,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </section>
 <section id="latency-investigation-1" class="slide level2">
 <h2>Latency investigation</h2>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-10_8d1b9c44c96c8eaef0c446d15715e51f">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-11_7c3e92269970dba458b7cc702e9efe0e">
 <div class="sourceCode cell-code" id="cb4" data-code-line-numbers="|5|6|8-9|14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>pos_first_true <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">match</span>(<span class="cn">TRUE</span>, <span class="fu">rev</span>(x), <span class="fu">length</span>(x) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">1</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a></span>
 <span id="cb4-3"><a href="#cb4-3"></a>na0_latency <span class="ot">&lt;-</span> <span class="cf">function</span>(dat, group_key, ref_time_value) {</span>
@@ -601,7 +601,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <section id="latency-investigation-2-days" class="slide level2">
 <h2>Latency investigation, &gt; 2 days</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-11-1.png" class="r-stretch"></section></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-12-1.png" class="r-stretch"></section></section>
 <section>
 <section id="epipredict" class="title-slide slide level1 center">
 <h1><code>{epipredict}</code></h1>
@@ -682,7 +682,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <li>Predict <code>death_rate</code>, 1 week ahead, with <code>0,7,14</code> day lags of <code>cases</code> and <code>deaths</code>.</li>
 <li>Use <code>lm</code> for estimation. Also create intervals.</li>
 </ul>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-12_84d009acab229f248c1ca2977f62ba88">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-13_9f804c26f1ddda7b60989d86486c2cbc">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>edf <span class="ot">&lt;-</span> case_death_rate_subset <span class="co"># grab some built-in data</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>canned <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(</span>
 <span id="cb5-3"><a href="#cb5-3"></a>  <span class="at">epi_data =</span> edf, </span>
@@ -694,7 +694,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </section>
 <section id="adjust-lots-of-built-in-options" class="slide level2">
 <h2>Adjust lots of built-in options</h2>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-13_dded37fb3f8fe5beb70487bfe69707a6">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-14_0a58b9776dcbfba88cb0d12ad825e261">
 <div class="sourceCode cell-code" id="cb6" data-code-line-numbers="|4|5|7|8-12|13|14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>rf <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(</span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="at">epi_data =</span> edf, </span>
 <span id="cb6-3"><a href="#cb6-3"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>, </span>
@@ -715,7 +715,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </section>
 <section id="do-almost-anything-manually" class="slide level2">
 <h2>Do (almost) anything manually</h2>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-14_d5921dd660002a71448f90ddb15c783a">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-15_248f68567b8fdc5de1ba14d0849156ff">
 <div class="sourceCode cell-code" id="cb7" data-code-line-numbers="1-6|8-13|15-17|19-26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># A preprocessing "recipe" that turns raw data into features / response</span></span>
 <span id="cb7-2"><a href="#cb7-2"></a>r <span class="ot">&lt;-</span> <span class="fu">epi_recipe</span>(edf) <span class="sc">%&gt;%</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">step_epi_lag</span>(case_rate, <span class="at">lag =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">14</span>)) <span class="sc">%&gt;%</span></span>
@@ -746,7 +746,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </section>
 <section id="visualize-a-result-for-1-forecast-date-1-location" class="slide level2">
 <h2>Visualize a result for 1 forecast date, 1 location</h2>
-<div class="cell" data-layout-align="center" data-hash="index_cache/revealjs/unnamed-chunk-15_de63a4909dcef1615724310146eca190">
+<div class="cell" data-layout-align="center" data-hash="index_cache/revealjs/unnamed-chunk-16_4b0204f25aa57a56fa7f8199e6c0b44e">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>fd <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2021-11-30"</span>)</span>
@@ -801,7 +801,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </details>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-15-1.svg" class="r-stretch quarto-figure-center"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-16-1.svg" class="r-stretch quarto-figure-center"></section>
 <section id="packages-are-under-active-development" class="slide level2 smaller">
 <h2>Packages are under active development</h2>
 <h3 id="thanks">Thanks:</h3>
@@ -817,9 +817,9 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <li>National Sciences and Engineering Research Council of Canada</li>
 </ul>
 </div><div class="column" style="width:50%;">
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-16_01175be9c8fe0e6829fe3e15f58b472c">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-17_d54d9e53a704ee175a94b4ddcf771866">
 <div class="cell-output-display">
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-16-1.png"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-17-1.png"></p>
 </div>
 </div>
 </div>
