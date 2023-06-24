@@ -426,7 +426,7 @@
 </section>
 <section id="packages-under-development" class="slide level2">
 <h2>Packages under development</h2>
-<div class="cell" data-reveal="true" data-fig-width="8" data-fig-height="6">
+<div class="cell" data-reveal="true" data-fig-width="10" data-fig-height="7">
 <div class="cell-output-display">
 <div>
 <div>
@@ -580,8 +580,8 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </section>
 <section id="latency-investigation-1" class="slide level2">
 <h2>Latency investigation</h2>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-10_30defb784c675a319497cc4850a0beff">
-<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="|5|6|8-9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>pos_first_true <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">match</span>(<span class="cn">TRUE</span>, <span class="fu">rev</span>(x), <span class="fu">length</span>(x) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">1</span></span>
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-10_8d1b9c44c96c8eaef0c446d15715e51f">
+<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="|5|6|8-9|14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>pos_first_true <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">match</span>(<span class="cn">TRUE</span>, <span class="fu">rev</span>(x), <span class="fu">length</span>(x) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">1</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a></span>
 <span id="cb4-3"><a href="#cb4-3"></a>na0_latency <span class="ot">&lt;-</span> <span class="cf">function</span>(dat, group_key, ref_time_value) {</span>
 <span id="cb4-4"><a href="#cb4-4"></a>  <span class="fu">group_by</span>(dat, geo_value) <span class="sc">%&gt;%</span></span>
@@ -591,7 +591,11 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <span id="cb4-8"><a href="#cb4-8"></a>      <span class="at">nominal_latency =</span> <span class="fu">as.integer</span>(ref_time_value <span class="sc">-</span> <span class="fu">max</span>(time_value)),</span>
 <span id="cb4-9"><a href="#cb4-9"></a>      <span class="at">na0_latency =</span> <span class="fu">pos_first_true</span>(not_na0) <span class="sc">+</span> nominal_latency</span>
 <span id="cb4-10"><a href="#cb4-10"></a>    )</span>
-<span id="cb4-11"><a href="#cb4-11"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-11"><a href="#cb4-11"></a>}</span>
+<span id="cb4-12"><a href="#cb4-12"></a></span>
+<span id="cb4-13"><a href="#cb4-13"></a>hhs_flu_hosp_archive <span class="sc">%&gt;%</span> </span>
+<span id="cb4-14"><a href="#cb4-14"></a>  <span class="fu">epix_slide</span>(na0_latency, <span class="at">before =</span> <span class="dv">27</span>, <span class="at">names_sep =</span> <span class="cn">NULL</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-15"><a href="#cb4-15"></a>  <span class="fu">rename</span>(<span class="at">version =</span> time_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="latency-investigation-2-days" class="slide level2">
@@ -648,19 +652,17 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <section id="canned-forecasters-that-work-out-of-the-box.-1" class="slide level2">
 <h2>Canned forecasters that work out of the box.</h2>
 <p>But, you can adjust <span class="secondary">a lot</span> of options</p>
-<h3 id="making-dumb-but-useful-forecasts-in-epidemiology">Making dumb (but useful!) forecasts in epidemiology</h3>
-<div>
+<h3 id="example-forecasting-task">Example forecasting task</h3>
 <ul>
-<li class="fragment"><p>On day <span class="math inline">\(t\)</span></p></li>
-<li class="fragment"><p>We want to predict</p>
+<li><p>On day <span class="math inline">\(t\)</span></p></li>
+<li><p>We want to predict</p>
 <ul>
-<li class="fragment">new hospitalizations <span class="math inline">\(y\)</span>,</li>
-<li class="fragment"><span class="math inline">\(h\)</span> days ahead,</li>
-<li class="fragment">at many locations <span class="math inline">\(j\)</span>.</li>
+<li>new hospitalizations <span class="math inline">\(y\)</span>,</li>
+<li><span class="math inline">\(h\)</span> days ahead,</li>
+<li>at many locations <span class="math inline">\(j\)</span>.</li>
 </ul></li>
-<li class="fragment"><p>We’re going to make a new forecast each week.</p></li>
+<li><p>We’re going to make a new forecast each week.</p></li>
 </ul>
-</div>
 </section>
 <section id="canned-forecasters-that-work-out-of-the-box.-2" class="slide level2">
 <h2>Canned forecasters that work out of the box.</h2>
@@ -680,10 +682,10 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <li>Predict <code>death_rate</code>, 1 week ahead, with <code>0,7,14</code> day lags of <code>cases</code> and <code>deaths</code>.</li>
 <li>Use <code>lm</code> for estimation. Also create intervals.</li>
 </ul>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-12_3b03ca02b55e5a16a87df3e3678c2524">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>jhu <span class="ot">&lt;-</span> case_death_rate_subset <span class="co"># grab some built-in data</span></span>
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-12_84d009acab229f248c1ca2977f62ba88">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>edf <span class="ot">&lt;-</span> case_death_rate_subset <span class="co"># grab some built-in data</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>canned <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(</span>
-<span id="cb5-3"><a href="#cb5-3"></a>  <span class="at">epi_data =</span> jhu, </span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="at">epi_data =</span> edf, </span>
 <span id="cb5-4"><a href="#cb5-4"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>, </span>
 <span id="cb5-5"><a href="#cb5-5"></a>  <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>)</span>
 <span id="cb5-6"><a href="#cb5-6"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -692,9 +694,9 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </section>
 <section id="adjust-lots-of-built-in-options" class="slide level2">
 <h2>Adjust lots of built-in options</h2>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-13_b01a867a74bc585883960d9ff4dc8b76">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-13_dded37fb3f8fe5beb70487bfe69707a6">
 <div class="sourceCode cell-code" id="cb6" data-code-line-numbers="|4|5|7|8-12|13|14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>rf <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(</span>
-<span id="cb6-2"><a href="#cb6-2"></a>  <span class="at">epi_data =</span> jhu, </span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="at">epi_data =</span> edf, </span>
 <span id="cb6-3"><a href="#cb6-3"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>, </span>
 <span id="cb6-4"><a href="#cb6-4"></a>  <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>, <span class="st">"fb-survey"</span>),</span>
 <span id="cb6-5"><a href="#cb6-5"></a>  <span class="at">trainer =</span> parsnip<span class="sc">::</span><span class="fu">rand_forest</span>(<span class="at">mode =</span> <span class="st">"regression"</span>), <span class="co"># use {ranger}</span></span>
@@ -713,9 +715,9 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </section>
 <section id="do-almost-anything-manually" class="slide level2">
 <h2>Do (almost) anything manually</h2>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-14_877bcca5e1dd9efc37d1a91a33507336">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-14_d5921dd660002a71448f90ddb15c783a">
 <div class="sourceCode cell-code" id="cb7" data-code-line-numbers="1-6|8-13|15-17|19-26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># A preprocessing "recipe" that turns raw data into features / response</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>r <span class="ot">&lt;-</span> <span class="fu">epi_recipe</span>(jhu) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>r <span class="ot">&lt;-</span> <span class="fu">epi_recipe</span>(edf) <span class="sc">%&gt;%</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">step_epi_lag</span>(case_rate, <span class="at">lag =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">14</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">step_epi_lag</span>(death_rate, <span class="at">lag =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">14</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb7-5"><a href="#cb7-5"></a>  <span class="fu">step_epi_ahead</span>(death_rate, <span class="at">ahead =</span> <span class="dv">14</span>) <span class="sc">%&gt;%</span></span>
@@ -724,7 +726,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <span id="cb7-8"><a href="#cb7-8"></a><span class="co"># A postprocessing routine describing what to do to the predictions</span></span>
 <span id="cb7-9"><a href="#cb7-9"></a>f <span class="ot">&lt;-</span> <span class="fu">frosting</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb7-10"><a href="#cb7-10"></a>  <span class="fu">layer_predict</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb7-11"><a href="#cb7-11"></a>  <span class="fu">layer_threshold</span>(.pred, <span class="at">lower =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="co"># predictions/intervals should be non-negative</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>  <span class="fu">layer_threshold</span>(.pred, <span class="at">lower =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="co"># predictions / intervals should be non-negative</span></span>
 <span id="cb7-12"><a href="#cb7-12"></a>  <span class="fu">layer_add_target_date</span>(<span class="at">target_date =</span> <span class="fu">max</span>(jhu<span class="sc">$</span>time_value) <span class="sc">+</span> <span class="dv">14</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb7-13"><a href="#cb7-13"></a>  <span class="fu">layer_add_forecast_date</span>(<span class="at">forecast_date =</span> <span class="fu">max</span>(jhu<span class="sc">$</span>time_value))</span>
 <span id="cb7-14"><a href="#cb7-14"></a></span>
@@ -733,15 +735,73 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <span id="cb7-17"><a href="#cb7-17"></a>ewf <span class="ot">&lt;-</span> <span class="fu">epi_workflow</span>(r, <span class="fu">quantile_reg</span>(<span class="at">tau =</span> <span class="fu">c</span>(.<span class="dv">1</span>, .<span class="dv">5</span>, .<span class="dv">9</span>)), f)</span>
 <span id="cb7-18"><a href="#cb7-18"></a></span>
 <span id="cb7-19"><a href="#cb7-19"></a><span class="co"># Fit it to data (we could fit this to ANY data that has the same format)</span></span>
-<span id="cb7-20"><a href="#cb7-20"></a>trained_ewf <span class="ot">&lt;-</span> ewf <span class="sc">%&gt;%</span> <span class="fu">fit</span>(jhu)</span>
+<span id="cb7-20"><a href="#cb7-20"></a>trained_ewf <span class="ot">&lt;-</span> ewf <span class="sc">%&gt;%</span> <span class="fu">fit</span>(edf)</span>
 <span id="cb7-21"><a href="#cb7-21"></a></span>
 <span id="cb7-22"><a href="#cb7-22"></a><span class="co"># examines the recipe to determine what we need to make the prediction</span></span>
-<span id="cb7-23"><a href="#cb7-23"></a>latest <span class="ot">&lt;-</span> <span class="fu">get_test_data</span>(r, jhu)</span>
+<span id="cb7-23"><a href="#cb7-23"></a>latest <span class="ot">&lt;-</span> <span class="fu">get_test_data</span>(r, edf)</span>
 <span id="cb7-24"><a href="#cb7-24"></a></span>
 <span id="cb7-25"><a href="#cb7-25"></a><span class="co"># we could make predictions using the same model on ANY test data</span></span>
 <span id="cb7-26"><a href="#cb7-26"></a>preds <span class="ot">&lt;-</span> trained_ewf <span class="sc">%&gt;%</span> <span class="fu">predict</span>(<span class="at">new_data =</span> latest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="visualize-a-result-for-1-forecast-date-1-location" class="slide level2">
+<h2>Visualize a result for 1 forecast date, 1 location</h2>
+<div class="cell" data-layout-align="center" data-hash="index_cache/revealjs/unnamed-chunk-15_b983fa6619377bb2040a440b095e2407">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>fd <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2021-11-30"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>geos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ut"</span>, <span class="st">"ca"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a>tedf <span class="ot">&lt;-</span> edf <span class="sc">%&gt;%</span> <span class="fu">filter</span>(time_value <span class="sc">&gt;=</span> fd)</span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co"># use most recent 3 months for training</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>edf <span class="ot">&lt;-</span> edf <span class="sc">%&gt;%</span> <span class="fu">filter</span>(time_value <span class="sc">&lt;</span> fd, time_value <span class="sc">&gt;=</span> fd <span class="sc">-</span> 90L)</span>
+<span id="cb8-7"><a href="#cb8-7"></a></span>
+<span id="cb8-8"><a href="#cb8-8"></a>rec <span class="ot">&lt;-</span> <span class="fu">epi_recipe</span>(edf) <span class="sc">%&gt;%</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>  <span class="fu">step_epi_lag</span>(case_rate, <span class="at">lag =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">14</span>, <span class="dv">21</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a>  <span class="fu">step_epi_lag</span>(death_rate, <span class="at">lag =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">14</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a>  <span class="fu">step_epi_ahead</span>(death_rate, <span class="at">ahead =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">28</span>)</span>
+<span id="cb8-12"><a href="#cb8-12"></a></span>
+<span id="cb8-13"><a href="#cb8-13"></a>f <span class="ot">&lt;-</span> <span class="fu">frosting</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a>  <span class="fu">layer_predict</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a>  <span class="fu">layer_unnest</span>(.pred) <span class="sc">%&gt;%</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a>  <span class="fu">layer_naomit</span>(distn) <span class="sc">%&gt;%</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a>  <span class="fu">layer_add_forecast_date</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a>  <span class="fu">layer_threshold</span>(distn)</span>
+<span id="cb8-19"><a href="#cb8-19"></a></span>
+<span id="cb8-20"><a href="#cb8-20"></a>ee <span class="ot">&lt;-</span> <span class="fu">smooth_quantile_reg</span>(</span>
+<span id="cb8-21"><a href="#cb8-21"></a>  <span class="at">tau =</span> <span class="fu">c</span>(.<span class="dv">1</span>, .<span class="dv">25</span>, .<span class="dv">5</span>, .<span class="dv">75</span>, .<span class="dv">9</span>),</span>
+<span id="cb8-22"><a href="#cb8-22"></a>  <span class="at">outcome_locations =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">28</span>,</span>
+<span id="cb8-23"><a href="#cb8-23"></a>  <span class="at">degree =</span> 3L</span>
+<span id="cb8-24"><a href="#cb8-24"></a>)</span>
+<span id="cb8-25"><a href="#cb8-25"></a></span>
+<span id="cb8-26"><a href="#cb8-26"></a>ewf <span class="ot">&lt;-</span> <span class="fu">epi_workflow</span>(rec, ee, f)</span>
+<span id="cb8-27"><a href="#cb8-27"></a>  </span>
+<span id="cb8-28"><a href="#cb8-28"></a>the_fit <span class="ot">&lt;-</span> ewf <span class="sc">%&gt;%</span> <span class="fu">fit</span>(edf)</span>
+<span id="cb8-29"><a href="#cb8-29"></a></span>
+<span id="cb8-30"><a href="#cb8-30"></a>latest <span class="ot">&lt;-</span> <span class="fu">get_test_data</span>(rec, edf, <span class="at">fill_locf =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-31"><a href="#cb8-31"></a>preds <span class="ot">&lt;-</span> <span class="fu">predict</span>(the_fit, <span class="at">new_data =</span> latest) <span class="sc">%&gt;%</span></span>
+<span id="cb8-32"><a href="#cb8-32"></a>  <span class="fu">mutate</span>(<span class="at">forecast_date =</span> fd, <span class="at">target_date =</span> fd <span class="sc">+</span> ahead) <span class="sc">%&gt;%</span></span>
+<span id="cb8-33"><a href="#cb8-33"></a>  <span class="fu">select</span>(geo_value, target_date, distn) <span class="sc">%&gt;%</span></span>
+<span id="cb8-34"><a href="#cb8-34"></a>  <span class="fu">pivot_quantiles</span>(distn) <span class="sc">%&gt;%</span></span>
+<span id="cb8-35"><a href="#cb8-35"></a>  <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> geos)</span>
+<span id="cb8-36"><a href="#cb8-36"></a></span>
+<span id="cb8-37"><a href="#cb8-37"></a><span class="fu">ggplot</span>(preds) <span class="sc">+</span></span>
+<span id="cb8-38"><a href="#cb8-38"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(target_date, <span class="at">ymin =</span> <span class="st">`</span><span class="at">0.1</span><span class="st">`</span>, <span class="at">ymax =</span> <span class="st">`</span><span class="at">0.9</span><span class="st">`</span>),</span>
+<span id="cb8-39"><a href="#cb8-39"></a>              <span class="at">fill =</span> <span class="st">"cornflowerblue"</span>, <span class="at">alpha =</span> .<span class="dv">8</span>) <span class="sc">+</span></span>
+<span id="cb8-40"><a href="#cb8-40"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(target_date, <span class="at">ymin =</span> <span class="st">`</span><span class="at">0.25</span><span class="st">`</span>, <span class="at">ymax =</span> <span class="st">`</span><span class="at">0.75</span><span class="st">`</span>),</span>
+<span id="cb8-41"><a href="#cb8-41"></a>              <span class="at">fill =</span> <span class="st">"#00488E"</span>, <span class="at">alpha =</span> .<span class="dv">8</span>) <span class="sc">+</span></span>
+<span id="cb8-42"><a href="#cb8-42"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> <span class="fu">bind_rows</span>(tedf, edf) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> geos), </span>
+<span id="cb8-43"><a href="#cb8-43"></a>            <span class="fu">aes</span>(time_value, death_rate), <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb8-44"><a href="#cb8-44"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(target_date, <span class="st">`</span><span class="at">0.5</span><span class="st">`</span>), <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb8-45"><a href="#cb8-45"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> fd) <span class="sc">+</span></span>
+<span id="cb8-46"><a href="#cb8-46"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>geo_value) <span class="sc">+</span></span>
+<span id="cb8-47"><a href="#cb8-47"></a>  <span class="fu">theme_bw</span>(<span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb8-48"><a href="#cb8-48"></a>  <span class="fu">scale_x_date</span>(<span class="at">name =</span> <span class="st">""</span>, <span class="at">date_labels =</span> <span class="st">"%b %Y"</span>) <span class="sc">+</span></span>
+<span id="cb8-49"><a href="#cb8-49"></a>  <span class="fu">ylab</span>(<span class="st">"Deaths per 100K inhabitants"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-15-1.svg" class="r-stretch quarto-figure-center"></section>
 <section id="packages-are-under-active-development" class="slide level2 smaller">
 <h2>Packages are under active development</h2>
 <h3 id="thanks">Thanks:</h3>
@@ -757,9 +817,9 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <li>National Sciences and Engineering Research Council of Canada</li>
 </ul>
 </div><div class="column" style="width:50%;">
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-15_3f27fed91674466f5f53beb2d0264165">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-16_01175be9c8fe0e6829fe3e15f58b472c">
 <div class="cell-output-display">
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-15-1.png"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-16-1.png"></p>
 </div>
 </div>
 </div>

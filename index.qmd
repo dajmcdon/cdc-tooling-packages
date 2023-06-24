@@ -96,8 +96,8 @@ CSTE Workshop on Infectious Disease Forecasting --- 25 June 2023
 ## Packages under development
 
 ```{mermaid}
-%%| fig-width: 8
-%%| fig-height: 6
+%%| fig-width: 10
+%%| fig-height: 7
 flowchart LR
   A("{epidatr}") --> C("{epiprocess}")
   B("{epidatpy}") --> C
@@ -249,7 +249,7 @@ There are (lots) of possible definitions.
 ```{r}
 #| eval: false
 #| echo: true
-#| code-line-numbers: "|5|6|8-9"
+#| code-line-numbers: "|5|6|8-9|14"
 pos_first_true <- function(x) match(TRUE, rev(x), length(x) + 1) - 1
 
 na0_latency <- function(dat, group_key, ref_time_value) {
@@ -261,7 +261,12 @@ na0_latency <- function(dat, group_key, ref_time_value) {
       na0_latency = pos_first_true(not_na0) + nominal_latency
     )
 }
+
+hhs_flu_hosp_archive %>% 
+  epix_slide(na0_latency, before = 27, names_sep = NULL) %>% 
+  rename(version = time_value)
 ```
+
 
 ## Latency investigation, > 2 days
 
@@ -338,9 +343,8 @@ But, you can adjust [a lot]{.secondary} of options
 
 But, you can adjust [a lot]{.secondary} of options
 
-### Making dumb (but useful!) forecasts in epidemiology
+### Example forecasting task
 
-::: {.incremental}
 
 * On day $t$
 
@@ -351,7 +355,7 @@ But, you can adjust [a lot]{.secondary} of options
 
 * We're going to make a new forecast each week.
 
-:::
+
 
 ## Canned forecasters that work out of the box.
 
@@ -381,9 +385,9 @@ $$\hat{y}_{j,\ t+h} = \mu + a_0 y_{j,\ t} + a_7 y_{j,\ t-7} + b_0 x_{j,\ t} + b_
 ```{r}
 #| echo: true
 #| warning: false
-jhu <- case_death_rate_subset # grab some built-in data
+edf <- case_death_rate_subset # grab some built-in data
 canned <- arx_forecaster(
-  epi_data = jhu, 
+  epi_data = edf, 
   outcome = "death_rate", 
   predictors = c("case_rate", "death_rate")
 )
@@ -398,7 +402,7 @@ The output is a model object that could be reused in the future, along with the 
 #| eval: false
 #| code-line-numbers: "|4|5|7|8-12|13|14"
 rf <- arx_forecaster(
-  epi_data = jhu, 
+  epi_data = edf, 
   outcome = "death_rate", 
   predictors = c("case_rate", "death_rate", "fb-survey"),
   trainer = parsnip::rand_forest(mode = "regression"), # use {ranger}
@@ -424,7 +428,7 @@ rf <- arx_forecaster(
 #| eval: false
 #| code-line-numbers: "1-6|8-13|15-17|19-26"
 # A preprocessing "recipe" that turns raw data into features / response
-r <- epi_recipe(jhu) %>%
+r <- epi_recipe(edf) %>%
   step_epi_lag(case_rate, lag = c(0, 1, 2, 3, 7, 14)) %>%
   step_epi_lag(death_rate, lag = c(0, 7, 14)) %>%
   step_epi_ahead(death_rate, ahead = 14) %>%
@@ -433,7 +437,7 @@ r <- epi_recipe(jhu) %>%
 # A postprocessing routine describing what to do to the predictions
 f <- frosting() %>%
   layer_predict() %>%
-  layer_threshold(.pred, lower = 0) %>% # predictions/intervals should be non-negative
+  layer_threshold(.pred, lower = 0) %>% # predictions / intervals should be non-negative
   layer_add_target_date(target_date = max(jhu$time_value) + 14) %>%
   layer_add_forecast_date(forecast_date = max(jhu$time_value))
 
@@ -442,14 +446,71 @@ f <- frosting() %>%
 ewf <- epi_workflow(r, quantile_reg(tau = c(.1, .5, .9)), f)
 
 # Fit it to data (we could fit this to ANY data that has the same format)
-trained_ewf <- ewf %>% fit(jhu)
+trained_ewf <- ewf %>% fit(edf)
 
 # examines the recipe to determine what we need to make the prediction
-latest <- get_test_data(r, jhu)
+latest <- get_test_data(r, edf)
 
 # we could make predictions using the same model on ANY test data
 preds <- trained_ewf %>% predict(new_data = latest)
 ```
+
+## Visualize a result for 1 forecast date, 1 location
+
+```{r, fig.align='center', fig.width=9}
+#| echo: true
+#| code-fold: true
+fd <- as.Date("2021-11-30")
+geos <- c("ut", "ca")
+
+tedf <- edf %>% filter(time_value >= fd)
+# use most recent 3 months for training
+edf <- edf %>% filter(time_value < fd, time_value >= fd - 90L)
+
+rec <- epi_recipe(edf) %>%
+  step_epi_lag(case_rate, lag = c(0, 7, 14, 21)) %>%
+  step_epi_lag(death_rate, lag = c(0, 7, 14)) %>%
+  step_epi_ahead(death_rate, ahead = 1:28)
+
+f <- frosting() %>%
+  layer_predict() %>%
+  layer_unnest(.pred) %>%
+  layer_naomit(distn) %>%
+  layer_add_forecast_date() %>%
+  layer_threshold(distn)
+
+ee <- smooth_quantile_reg(
+  tau = c(.1, .25, .5, .75, .9),
+  outcome_locations = 1:28,
+  degree = 3L
+)
+
+ewf <- epi_workflow(rec, ee, f)
+  
+the_fit <- ewf %>% fit(edf)
+
+latest <- get_test_data(rec, edf, fill_locf = TRUE)
+preds <- predict(the_fit, new_data = latest) %>%
+  mutate(forecast_date = fd, target_date = fd + ahead) %>%
+  select(geo_value, target_date, distn) %>%
+  pivot_quantiles(distn) %>%
+  filter(geo_value %in% geos)
+
+ggplot(preds) +
+  geom_ribbon(aes(target_date, ymin = `0.1`, ymax = `0.9`),
+              fill = "cornflowerblue", alpha = .8) +
+  geom_ribbon(aes(target_date, ymin = `0.25`, ymax = `0.75`),
+              fill = "#00488E", alpha = .8) +
+  geom_line(data = bind_rows(tedf, edf) %>% filter(geo_value %in% geos), 
+            aes(time_value, death_rate), size = 1.5) +
+  geom_line(aes(target_date, `0.5`), color = "orange", size = 1.5) +
+  geom_vline(xintercept = fd) +
+  facet_wrap(~geo_value) +
+  theme_bw(16) +
+  scale_x_date(name = "", date_labels = "%b %Y") +
+  ylab("Deaths per 100K inhabitants")
+```
+
 
 
 ## Packages are under active development {.smaller}
