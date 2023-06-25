@@ -79,6 +79,8 @@ CSTE Workshop on Infectious Disease Forecasting --- 25 June 2023
 :::
 ::::
 
+## {data-background-image=`r xfun::base64_uri("delphi-intro-slides-for-cdc-webinar.svg")`}
+
 ## Background
 
 ::: {.incremental}
