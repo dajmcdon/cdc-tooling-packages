@@ -137,6 +137,37 @@ contains the most [up-to-date values]{.primary} of the signal variables, [as of]
 
 ## `epi_df`: snapshot of a data set
 
+```{css}
+.withscroll {
+    height: 55vh;
+    overflow-y: auto !important;
+}
+```
+
+```{r}
+#| output: asis
+
+withr::with_options(
+  code={
+    cat("<details><summary>Example data object documentation, license, attribution</summary>")
+    cat('<div class="withscroll">')
+    print(help("case_death_rate_subset", package="epipredict", help_type="text"))
+    cat("</div>")
+    cat("</details>")
+  },
+  list(pager=function(files, header, title, delete.file) {
+    on.exit({
+      unlink(files)
+    })
+    cat(paste(c("<pre>",purrr::reduce(purrr::map(files, function(file) {
+      # gsub("</?u>","_",gsub("</u>( *)<u>","\\1",
+      gsub("_\b(.)", "<u>\\1</u>", readLines(file))
+      # ))
+    }), function(x, y) c(x,"\n\n\n",y)), "</pre>"), collapse="\n"))
+  })
+)
+```
+
 ```{r}
 edf <- case_death_rate_subset
 edf
@@ -208,6 +239,30 @@ Epidemiology data gets revised frequently. (Happens in Economics as well.)
 
 
 ## Revision patterns
+
+```{r}
+#| output: asis
+
+withr::with_options(
+  code={
+    cat("<details><summary>Example data object documentation, license, attribution</summary>")
+    cat('<div class="withscroll">')
+    print(help("archive_cases_dv_subset", package="epiprocess", help_type="text"))
+    cat("</div>")
+    cat("</details>")
+  },
+  list(pager=function(files, header, title, delete.file) {
+    on.exit({
+      unlink(files)
+    })
+    cat(paste(c("<pre>",purrr::reduce(purrr::map(files, function(file) {
+      # gsub("</?u>","_",gsub("</u>( *)<u>","\\1",
+      gsub("_\b(.)", "<u>\\1</u>", readLines(file))
+      # ))
+    }), function(x, y) c(x,"\n\n\n",y)), "</pre>"), collapse="\n"))
+  })
+)
+```
 
 ```{r}
 ggplot(snapshots %>% filter(!latest),

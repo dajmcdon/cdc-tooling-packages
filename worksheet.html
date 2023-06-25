@@ -173,6 +173,17 @@ pre code {
 <div id="packages-and-data" class="section level1">
 <h1>Packages and data</h1>
 <p>First, we’ll load some libraries and data. The data is saved in this repo, for offline use. But one could use <code>{epidatr}</code> to download it if desired.</p>
+<details>
+<summary>
+Data documentation, license, attribution
+</summary>
+<p>See API data documentation available <a href="https://cmu-delphi.github.io/delphi-epidata/">here</a>, and licensing and citation info <a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast_licensing.html">here</a>. The data used here is all available under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</p>
+<ul>
+<li>CTIS (“fb-survey”) and doctor visits data: Data from Delphi COVIDcast. Obtained via the Delphi Epidata API. <a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast.html" class="uri">https://cmu-delphi.github.io/delphi-epidata/api/covidcast.html</a></li>
+<li>JHU-CSSE data: COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University.</li>
+</ul>
+<p>Data selections and modifications are described in the code chunks in this document and the linked API documentation.</p>
+</details>
 <pre class="r"><code>library(epidatasets)
 library(epiprocess)
 library(epipredict)

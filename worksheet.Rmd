@@ -15,6 +15,26 @@ results to the observed data.
 First, we'll load some libraries and data. The data is saved in this repo, for
 offline use. But one could use `{epidatr}` to download it if desired.
 
+<details> <summary> Data documentation, license, attribution </summary>
+
+See API data documentation available
+[here](https://cmu-delphi.github.io/delphi-epidata/), and licensing and citation
+info
+[here](https://cmu-delphi.github.io/delphi-epidata/api/covidcast_licensing.html).
+The data used here is all available under [CC BY
+4.0](https://creativecommons.org/licenses/by/4.0/).
+
+- CTIS ("fb-survey") and doctor visits data: Data from Delphi COVIDcast.
+  Obtained via the Delphi Epidata API.
+  https://cmu-delphi.github.io/delphi-epidata/api/covidcast.html
+- JHU-CSSE data: COVID-19 Data Repository by the Center for Systems Science and
+  Engineering (CSSE) at Johns Hopkins University.
+
+Data selections and modifications are described in the code chunks in this
+document and the linked API documentation.
+
+</details>
+
 ```{r load-libraries, message=FALSE, warning=FALSE}
 library(epidatasets)
 library(epiprocess)

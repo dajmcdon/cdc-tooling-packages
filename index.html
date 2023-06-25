@@ -484,7 +484,75 @@
 </section>
 <section id="epi_df-snapshot-of-a-data-set-1" class="slide level2">
 <h2><code>epi_df</code>: snapshot of a data set</h2>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-4_8fa57b993ff89cfccc4333376333d120">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-4_8001741541feaf5e27031eeccdb426d2">
+<style type="text/css">
+.withscroll {
+    height: 55vh;
+    overflow-y: auto !important;
+}
+</style>
+</div>
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-5_03468591a83462e16c6327dfb50cd575">
+<details>
+<summary>
+Example data object documentation, license, attribution
+</summary>
+<div class="withscroll">
+<pre>case_death_rate_subset       package:epipredict        R Documentation
+
+<u>S</u><u>u</u><u>b</u><u>s</u><u>e</u><u>t</u> <u>o</u><u>f</u> <u>J</u><u>H</u><u>U</u> <u>d</u><u>a</u><u>i</u><u>l</u><u>y</u> <u>s</u><u>t</u><u>a</u><u>t</u><u>e</u> <u>c</u><u>a</u><u>s</u><u>e</u><u>s</u> <u>a</u><u>n</u><u>d</u> <u>d</u><u>e</u><u>a</u><u>t</u><u>h</u><u>s</u>
+
+<u>D</u><u>e</u><u>s</u><u>c</u><u>r</u><u>i</u><u>p</u><u>t</u><u>i</u><u>o</u><u>n</u>:
+
+     This data source of confirmed COVID-19 cases and deaths is based
+     on reports made available by the Center for Systems Science and
+     Engineering at Johns Hopkins University. This example data ranges
+     from Dec 31, 2020 to Dec 31, 2021, and includes all states.
+
+<u>U</u><u>s</u><u>a</u><u>g</u><u>e</u>:
+
+     case_death_rate_subset
+     
+<u>F</u><u>o</u><u>r</u><u>m</u><u>a</u><u>t</u>:
+
+     A tibble with 20,496 rows and 4 variables:
+
+     geo_value the geographic value associated with each row of
+          measurements.
+
+     time_value the time value associated with each row of
+          measurements.
+
+     case_rate 7-day average signal of number of new confirmed COVID-19
+          cases per 100,000 population, daily
+
+     death_rate 7-day average signal of number of new confirmed deaths
+          due to COVID-19 per 100,000 population, daily
+
+<u>S</u><u>o</u><u>u</u><u>r</u><u>c</u><u>e</u>:
+
+     This object contains a modified part of the COVID-19 Data
+     Repository by the Center for Systems Science and Engineering
+     (CSSE) at Johns Hopkins University as republished in the COVIDcast
+     Epidata API. This data set is licensed under the terms of the
+     Creative Commons Attribution 4.0 International license by the
+     Johns Hopkins University on behalf of its Center for Systems
+     Science in Engineering. Copyright Johns Hopkins University 2020.
+
+     Modifications:
+
+        • From the COVIDcast Epidata API: These signals are taken
+          directly from the JHU CSSE COVID-19 GitHub repository without
+          changes. The 7-day average signals are computed by Delphi by
+          calculating moving averages of the preceding 7 days, so the
+          signal for June 7 is the average of the underlying data for
+          June 1 through 7, inclusive.
+
+</pre>
+</div>
+</details>
+</div>
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-6_b26e9a14d008ede9677e6ca1ded20057">
 <div class="cell-output cell-output-stdout">
 <pre><code>An `epi_df` object, 20,496 x 4 with metadata:
 * geo_type  = state
@@ -511,22 +579,22 @@
 <section id="sliding-examples-on-epi_df" class="slide level2">
 <h2>Sliding examples on <code>epi_df</code></h2>
 <h3 id="correlations-at-different-lags">Correlations at different lags</h3>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-5_edfab3c59bf15d271e187ce2e0152a42">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-7_42df12a3ef2476c21bfcce93fb8c91af">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>cor0 <span class="ot">&lt;-</span> <span class="fu">epi_cor</span>(edf, case_rate, death_rate, <span class="at">cor_by =</span> time_value)</span>
 <span id="cb2-2"><a href="#cb2-2"></a>cor14 <span class="ot">&lt;-</span> <span class="fu">epi_cor</span>(edf, case_rate, death_rate, <span class="at">cor_by =</span> time_value, <span class="at">dt1 =</span> <span class="sc">-</span><span class="dv">14</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-6-1.svg" class="r-stretch quarto-figure-center"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-8-1.svg" class="r-stretch quarto-figure-center"></section>
 <section id="sliding-examples-on-epi_df-1" class="slide level2">
 <h2>Sliding examples on <code>epi_df</code></h2>
 <h3 id="growth-rates">Growth rates</h3>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-7_f455691cea8eb23020e211579bedc7ce">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-9_6fc19f59d8c991c3143a890f29c52121">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>edf <span class="ot">&lt;-</span> <span class="fu">filter</span>(edf, geo_value <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"ut"</span>, <span class="st">"ca"</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">group_by</span>(geo_value) <span class="sc">%&gt;%</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">mutate</span>(<span class="at">gr_cases =</span> <span class="fu">growth_rate</span>(time_value, case_rate, <span class="at">method =</span> <span class="st">"trend_filter"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-8-1.svg" class="r-stretch quarto-figure-center"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-10-1.svg" class="r-stretch quarto-figure-center"></section>
 <section id="epi_archive-collection-of-epi_dfs" class="slide level2">
 <h2><code>epi_archive</code>: collection of <code>epi_df</code>s</h2>
 <ul>
@@ -554,8 +622,80 @@
 </section>
 <section id="revision-patterns" class="slide level2">
 <h2>Revision patterns</h2>
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-11_7423d36017283d6541883aef50f21417">
+<details>
+<summary>
+Example data object documentation, license, attribution
+</summary>
+<div class="withscroll">
+<pre>archive_cases_dv_subset       package:epiprocess       R Documentation
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-9-1.svg" class="r-stretch"></section>
+<u>S</u><u>u</u><u>b</u><u>s</u><u>e</u><u>t</u> <u>o</u><u>f</u> <u>d</u><u>a</u><u>i</u><u>l</u><u>y</u> <u>d</u><u>o</u><u>c</u><u>t</u><u>o</u><u>r</u> <u>v</u><u>i</u><u>s</u><u>i</u><u>t</u><u>s</u> <u>a</u><u>n</u><u>d</u> <u>c</u><u>a</u><u>s</u><u>e</u><u>s</u> <u>i</u><u>n</u> <u>a</u><u>r</u><u>c</u><u>h</u><u>i</u><u>v</u><u>e</u> <u>f</u><u>o</u><u>r</u><u>m</u><u>a</u><u>t</u>
+
+<u>D</u><u>e</u><u>s</u><u>c</u><u>r</u><u>i</u><u>p</u><u>t</u><u>i</u><u>o</u><u>n</u>:
+
+     This data source is based on information about outpatient visits,
+     provided to us by health system partners, and also contains
+     confirmed COVID-19 cases based on reports made available by the
+     Center for Systems Science and Engineering at Johns Hopkins
+     University. This example data ranges from June 1, 2020 to Dec 1,
+     2021, and is also limited to California, Florida, Texas, and New
+     York.
+
+<u>U</u><u>s</u><u>a</u><u>g</u><u>e</u>:
+
+     archive_cases_dv_subset
+     
+<u>F</u><u>o</u><u>r</u><u>m</u><u>a</u><u>t</u>:
+
+     An 'epi_archive' data format. The data table DT has 129,638 rows
+     and 5 columns:
+
+     geo_value the geographic value associated with each row of
+          measurements.
+
+     time_value the time value associated with each row of
+          measurements.
+
+     version the time value specifying the version for each row of
+          measurements.
+
+     percent_cli percentage of doctor’s visits with CLI (COVID-like
+          illness) computed from medical insurance claims
+
+     case_rate_7d_av 7-day average signal of number of new confirmed
+          deaths due to COVID-19 per 100,000 population, daily
+
+<u>S</u><u>o</u><u>u</u><u>r</u><u>c</u><u>e</u>:
+
+     This object contains a modified part of the COVID-19 Data
+     Repository by the Center for Systems Science and Engineering
+     (CSSE) at Johns Hopkins University as republished in the COVIDcast
+     Epidata API. This data set is licensed under the terms of the
+     Creative Commons Attribution 4.0 International license by Johns
+     Hopkins University on behalf of its Center for Systems Science in
+     Engineering. Copyright Johns Hopkins University 2020.
+
+     Modifications:
+
+        • From the COVIDcast Doctor Visits API: The signal
+          'percent_cli' is taken directly from the API without changes.
+
+        • From the COVIDcast Epidata API: 'case_rate_7d_av' signal was
+          computed by Delphi from the original JHU-CSSE data by
+          calculating moving averages of the preceding 7 days, so the
+          signal for June 7 is the average of the underlying data for
+          June 1 through 7, inclusive.
+
+        • Furthermore, the data is a subset of the full dataset, the
+          signal names slightly altered, and formatted into a tibble.
+
+</pre>
+</div>
+</details>
+</div>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-12-1.svg" class="r-stretch"></section>
 <section id="latency-investigation" class="slide level2">
 <h2>Latency investigation</h2>
 <p>How stale is my data over space and time?</p>
@@ -581,7 +721,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </section>
 <section id="latency-investigation-1" class="slide level2">
 <h2>Latency investigation</h2>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-11_7c3e92269970dba458b7cc702e9efe0e">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-14_fa430333deaee260defd32363a76d059">
 <div class="sourceCode cell-code" id="cb4" data-code-line-numbers="|5|6|8-9|14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>pos_first_true <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">match</span>(<span class="cn">TRUE</span>, <span class="fu">rev</span>(x), <span class="fu">length</span>(x) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">1</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a></span>
 <span id="cb4-3"><a href="#cb4-3"></a>na0_latency <span class="ot">&lt;-</span> <span class="cf">function</span>(dat, group_key, ref_time_value) {</span>
@@ -602,7 +742,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <section id="latency-investigation-2-days" class="slide level2">
 <h2>Latency investigation, &gt; 2 days</h2>
 
-<img data-src="index_files/figure-revealjs/unnamed-chunk-12-1.png" class="r-stretch"></section></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-15-1.png" class="r-stretch"></section></section>
 <section>
 <section id="epipredict" class="title-slide slide level1 center">
 <h1><code>{epipredict}</code></h1>
@@ -683,7 +823,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <li>Predict <code>death_rate</code>, 1 week ahead, with <code>0,7,14</code> day lags of <code>cases</code> and <code>deaths</code>.</li>
 <li>Use <code>lm</code> for estimation. Also create intervals.</li>
 </ul>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-13_9f804c26f1ddda7b60989d86486c2cbc">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-16_0397d6c48eba5a75b8b780b3c945b887">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>edf <span class="ot">&lt;-</span> case_death_rate_subset <span class="co"># grab some built-in data</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>canned <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(</span>
 <span id="cb5-3"><a href="#cb5-3"></a>  <span class="at">epi_data =</span> edf, </span>
@@ -695,7 +835,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </section>
 <section id="adjust-lots-of-built-in-options" class="slide level2">
 <h2>Adjust lots of built-in options</h2>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-14_e4fe90a1a6e341dc445b8eed82d2e311">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-17_3ae49f5d2dd0e1099ec3149e543b8362">
 <div class="sourceCode cell-code" id="cb6" data-code-line-numbers="|4|5|7|8-12|13|14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>rf <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(</span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="at">epi_data =</span> edf, </span>
 <span id="cb6-3"><a href="#cb6-3"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>, </span>
@@ -716,7 +856,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </section>
 <section id="do-almost-anything-manually" class="slide level2">
 <h2>Do (almost) anything manually</h2>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-15_714a203c173a83e067a9baf3292fcc57">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-18_e805dde30de8517c353b7fa8f64e49d3">
 <div class="sourceCode cell-code" id="cb7" data-code-line-numbers="1-6|8-13|15-17|19-26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># A preprocessing "recipe" that turns raw data into features / response</span></span>
 <span id="cb7-2"><a href="#cb7-2"></a>r <span class="ot">&lt;-</span> <span class="fu">epi_recipe</span>(edf) <span class="sc">%&gt;%</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">step_epi_lag</span>(case_rate, <span class="at">lag =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">14</span>)) <span class="sc">%&gt;%</span></span>
@@ -747,7 +887,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </section>
 <section id="visualize-a-result-for-1-forecast-date-1-location" class="slide level2">
 <h2>Visualize a result for 1 forecast date, 1 location</h2>
-<div class="cell" data-layout-align="center" data-hash="index_cache/revealjs/unnamed-chunk-16_4b0204f25aa57a56fa7f8199e6c0b44e">
+<div class="cell" data-layout-align="center" data-hash="index_cache/revealjs/unnamed-chunk-19_3989b66ef147532111958d21bc97c0f5">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>fd <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2021-11-30"</span>)</span>
@@ -802,7 +942,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </details>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-16-1.svg" class="r-stretch quarto-figure-center"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-19-1.svg" class="r-stretch quarto-figure-center"></section>
 <section id="packages-are-under-active-development" class="slide level2 smaller">
 <h2>Packages are under active development</h2>
 <h3 id="thanks">Thanks:</h3>
@@ -818,9 +958,9 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <li>National Sciences and Engineering Research Council of Canada</li>
 </ul>
 </div><div class="column" style="width:50%;">
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-17_d54d9e53a704ee175a94b4ddcf771866">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-20_b221b40b94e8722fdebaffb832502334">
 <div class="cell-output-display">
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-17-1.png"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-20-1.png"></p>
 </div>
 </div>
 </div>
