@@ -367,6 +367,22 @@ data.</p>
 <p>First, we’ll load some libraries and data. The data is saved in this
 repo, for offline use. But one could use <code>{epidatr}</code> to
 download it if desired.</p>
+<details>
+<summary>
+Data documentation, license, attribution
+</summary>
+<p>See API data documentation available <a href="https://cmu-delphi.github.io/delphi-epidata/">here</a>, and
+licensing and citation info <a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast_licensing.html">here</a>.
+The data used here is all available under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</p>
+<ul>
+<li>CTIS (“fb-survey”) and doctor visits data: Data from Delphi
+COVIDcast. Obtained via the Delphi Epidata API. <a href="https://cmu-delphi.github.io/delphi-epidata/api/covidcast.html" class="uri">https://cmu-delphi.github.io/delphi-epidata/api/covidcast.html</a></li>
+<li>JHU-CSSE data: COVID-19 Data Repository by the Center for Systems
+Science and Engineering (CSSE) at Johns Hopkins University.</li>
+</ul>
+<p>Data selections and modifications are described in the code chunks in
+this document and the linked API documentation.</p>
+</details>
 <pre class="r"><code>library(epidatasets)
 library(epiprocess)
 library(epipredict)
@@ -418,8 +434,8 @@ for actually evaluating real-time forecasting models.</p>
 recommendations as collected with the CTIS Survey</li>
 <li><code>distancing</code>: a measure of adherence to social distancing
 recommendations as collected with the CTIS Survey</li>
-<li><code>dv_cli</code>: a measure of outpatient visits due to
-Covid-like-illness</li>
+<li><code>dv_cli</code>: estimated percentage of outpatient visits due
+to Covid-like-illness</li>
 </ul>
 <p>The first two (cases and deaths) are in counts. The others have been
 adjusted to be commensurate across locations, and also smoothed.</p>
@@ -431,14 +447,14 @@ and deaths. This has 2 purposes:</p>
 <li>We’ve found that it’s more accurate to train forecasters on rates
 instead of counts. This puts different locations on the same scale,
 allowing statistical models to borrow strength.</li>
-<li>When predicting totals over a week (as was the case for the
-Covid19ForecastHub), we’ve found it desirable to train and predict using
-weekly averages, then scale up, rather than training directly on the
-total. This smooths out any spikes and also deals directly with day of
-the week effects. Importantly, it also allows us to use <strong>every
-day</strong> as a row in our training data rather than <strong>only
-totals for each Monday</strong>. The result is that we have 7x as much
-data.</li>
+<li>When predicting totals over a week (like case and death forecasts
+submitted to the COVID-19 Forecast Hub), we’ve found it desirable to
+train and predict using weekly averages, then scale up, rather than
+training directly on the total. This smooths out any spikes and also
+deals directly with day of the week effects. Importantly, it also allows
+us to use <strong>every day</strong> as a row in our training data
+rather than <strong>only totals for each Monday</strong>. The result is
+that we have 7x as much data.</li>
 </ol>
 <p><strong>Note:</strong> While we’re going to “preprocess” our data
 before using it for forecasting, these steps could be done directly
@@ -512,18 +528,17 @@ fcast &lt;- arx_forecaster(
   outcome = &quot;deaths&quot;, 
   # Which ones would you use?
   predictors = c(&quot;deaths&quot;, &quot;cases&quot;, &quot;masking&quot;), 
-  # you could try others, see https://parsnip.tidymodels.org
-  # while we&#39;ve tried lots of them, some may fail and some aren&#39;t appropriate
-  # (e.g. multinom_reg())
-  # If you have {ranger} installed, try `rand_forest()`
+  # You could try other trainers; see https://parsnip.tidymodels.org. While
+  # we&#39;ve tried lots of them, some may fail and some aren&#39;t appropriate (e.g.
+  # multinom_reg()). If you have {ranger} installed, try `rand_forest()`.
   # 
   # If you want to use `quantile_reg()` you need to specify the levels in the
   # trainer and below (and include .5 for a point forecast)
   # (we&#39;re going to fix this https://github.com/cmu-delphi/epipredict/issues/208)
   trainer = linear_reg(),
   arx_args_list(
-    # the same for all predictors
-    # wrap in a list to differentiate (in the same order)
+    # the same for all predictors; to differentiate, use a list of vectors, one
+    # per predictor (in the same order)
     lags = c(0, 7, 14),
     ahead = 14L, # try whatever you like
     # this should be &gt; ahead + max(lags)
@@ -536,7 +551,7 @@ fcast &lt;- arx_forecaster(
     # you could set this to &quot;geo_value&quot; if you thought that different
     # states should have wider/narrower intervals, but since
     # we&#39;re forecasting rates, this probably doesn&#39;t matter
-    # (other things equal, we&#39;d neet more training data, if we did)
+    # (other things equal, we&#39;d need more training data, if we did)
     quantile_by_key = character(0L)
   )
 )</code></pre>
@@ -546,10 +561,11 @@ fcast &lt;- arx_forecaster(
 forecast date. So performance is likely better than it would be for a
 production forecast.</p>
 <p>Now, generate a plot for a few locations with the testing data as
-well.</p>
+well. The plotting code (hidden below), converts back to incident
+deaths.</p>
 <details>
 <pre class="r"><code>plot_fcast &lt;- function(fcasts, geos) {
-  dat &lt;- dat %&gt;% filter(geo_value %in% geos)
+  dat &lt;- dat %&gt;% filter(geo_value %in% geos) 
   fcasts &lt;- fcasts$predictions %&gt;% 
     filter(geo_value %in% geos) %&gt;%
     pivot_quantiles(contains(&quot;distn&quot;))

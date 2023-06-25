@@ -15,6 +15,26 @@ results to the observed data.
 First, we'll load some libraries and data. The data is saved in this repo, for
 offline use. But one could use `{epidatr}` to download it if desired.
 
+<details> <summary> Data documentation, license, attribution </summary>
+
+See API data documentation available
+[here](https://cmu-delphi.github.io/delphi-epidata/), and licensing and citation
+info
+[here](https://cmu-delphi.github.io/delphi-epidata/api/covidcast_licensing.html).
+The data used here is all available under [CC BY
+4.0](https://creativecommons.org/licenses/by/4.0/).
+
+- CTIS ("fb-survey") and doctor visits data: Data from Delphi COVIDcast.
+  Obtained via the Delphi Epidata API.
+  https://cmu-delphi.github.io/delphi-epidata/api/covidcast.html
+- JHU-CSSE data: COVID-19 Data Repository by the Center for Systems Science and
+  Engineering (CSSE) at Johns Hopkins University.
+
+Data selections and modifications are described in the code chunks in this
+document and the linked API documentation.
+
+</details>
+
 ```{r load-libraries, message=FALSE, warning=FALSE}
 library(epidatasets)
 library(epiprocess)
@@ -125,7 +145,7 @@ The signals that are available are:
 * `deaths`: incident deaths as reported by JHU
 * `masking`: a measure of adherence to masking recommendations as collected with the CTIS Survey
 * `distancing`: a measure of adherence to social distancing recommendations as collected with the CTIS Survey
-* `dv_cli`: a measure of outpatient visits due to Covid-like-illness
+* `dv_cli`: estimated percentage of outpatient visits due to Covid-like-illness
 
 The first two (cases and deaths) are in counts. The others have been adjusted
 to be commensurate across locations, and also smoothed.
@@ -138,7 +158,7 @@ This has 2 purposes:
 1. We've found that it's more accurate to train forecasters on rates instead of
 counts. This puts different locations on the same scale, allowing statistical 
 models to borrow strength.
-2. When predicting totals over a week (as was the case for the Covid19ForecastHub), we've found it desirable to train and predict using weekly averages, then scale up, rather than training directly on the total. This smooths out any spikes and also deals directly with day of the week effects. Importantly, it also allows us to use **every day** as a row in our training data rather than **only totals for each Monday**. The result is that we have 7x as much data.
+2. When predicting totals over a week (like case and death forecasts submitted to the COVID-19 Forecast Hub), we've found it desirable to train and predict using weekly averages, then scale up, rather than training directly on the total. This smooths out any spikes and also deals directly with day of the week effects. Importantly, it also allows us to use **every day** as a row in our training data rather than **only totals for each Monday**. The result is that we have 7x as much data.
 
 **Note:**
 While we're going to "preprocess" our data before using it for forecasting,
@@ -223,24 +243,24 @@ long time.
 Below is some code to produce a forecast for 2 weeks ahead.
 
 ```{r forecast-1-horizon}
+
 library(parsnip)
 fcast <- arx_forecaster(
   epi_data = training,
   outcome = "deaths", 
   # Which ones would you use?
   predictors = c("deaths", "cases", "masking"), 
-  # you could try others, see https://parsnip.tidymodels.org
-  # while we've tried lots of them, some may fail and some aren't appropriate
-  # (e.g. multinom_reg())
-  # If you have {ranger} installed, try `rand_forest()`
+  # You could try other trainers; see https://parsnip.tidymodels.org. While
+  # we've tried lots of them, some may fail and some aren't appropriate (e.g.
+  # multinom_reg()). If you have {ranger} installed, try `rand_forest()`.
   # 
   # If you want to use `quantile_reg()` you need to specify the levels in the
   # trainer and below (and include .5 for a point forecast)
   # (we're going to fix this https://github.com/cmu-delphi/epipredict/issues/208)
   trainer = linear_reg(),
   arx_args_list(
-    # the same for all predictors
-    # wrap in a list to differentiate (in the same order)
+    # the same for all predictors; to differentiate, use a list of vectors, one
+    # per predictor (in the same order)
     lags = c(0, 7, 14),
     ahead = 14L, # try whatever you like
     # this should be > ahead + max(lags)
@@ -253,7 +273,7 @@ fcast <- arx_forecaster(
     # you could set this to "geo_value" if you thought that different
     # states should have wider/narrower intervals, but since
     # we're forecasting rates, this probably doesn't matter
-    # (other things equal, we'd neet more training data, if we did)
+    # (other things equal, we'd need more training data, if we did)
     quantile_by_key = character(0L)
   )
 )

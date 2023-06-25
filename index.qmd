@@ -79,6 +79,8 @@ CSTE Workshop on Infectious Disease Forecasting --- 25 June 2023
 :::
 ::::
 
+## {data-background-image=`r xfun::base64_uri("delphi-intro-slides-for-cdc-webinar.svg")`}
+
 ## Background
 
 ::: {.incremental}
@@ -115,7 +117,7 @@ flowchart LR
 * General EDA for panel data
 * Calculate rolling statistics
 * Fill / impute gaps
-* Examine correlations
+* Examine correlations, growth rates
 * Store revision history smartly
 * Inspect revision patterns
 * Find / correct outliers
@@ -124,7 +126,7 @@ flowchart LR
 
 ## `epi_df`: snapshot of a data set
 
-* a tibble required columns, `geo_value` and `time_value`.
+* a tibble; requires columns `geo_value` and `time_value`.
 * arbitrary additional columns containing [measured values]{.primary}
 * additional [keys]{.primary} to index (`age_group`, `ethnicity`, etc.)
 
@@ -136,6 +138,37 @@ contains the most [up-to-date values]{.primary} of the signal variables, [as of]
 :::
 
 ## `epi_df`: snapshot of a data set
+
+```{css}
+.withscroll {
+    height: 55vh;
+    overflow-y: auto !important;
+}
+```
+
+```{r}
+#| output: asis
+
+withr::with_options(
+  code={
+    cat("<details><summary>Example data object documentation, license, attribution</summary>")
+    cat('<div class="withscroll">')
+    print(help("case_death_rate_subset", package="epipredict", help_type="text"))
+    cat("</div>")
+    cat("</details>")
+  },
+  list(pager=function(files, header, title, delete.file) {
+    on.exit({
+      unlink(files)
+    })
+    cat(paste(c("<pre>",purrr::reduce(purrr::map(files, function(file) {
+      # gsub("</?u>","_",gsub("</u>( *)<u>","\\1",
+      gsub("_\b(.)", "<u>\\1</u>", readLines(file))
+      # ))
+    }), function(x, y) c(x,"\n\n\n",y)), "</pre>"), collapse="\n"))
+  })
+)
+```
 
 ```{r}
 edf <- case_death_rate_subset
@@ -195,7 +228,7 @@ ggplot(edf, aes(x = time_value, y = gr_cases)) +
 
 * full version history of a data set
 * acts like a bunch of `epi_df`s --- but stored [compactly]{.primary}
-* Allows similar funtionality as `epi_df` but using only [data that would have been available at the time]{.primary}
+* allows similar funtionality as `epi_df` but using only [data that would have been available at the time]{.primary}
 
 ::: {.callout-note}
 ## Revisions
@@ -208,6 +241,30 @@ Epidemiology data gets revised frequently. (Happens in Economics as well.)
 
 
 ## Revision patterns
+
+```{r}
+#| output: asis
+
+withr::with_options(
+  code={
+    cat("<details><summary>Example data object documentation, license, attribution</summary>")
+    cat('<div class="withscroll">')
+    print(help("archive_cases_dv_subset", package="epiprocess", help_type="text"))
+    cat("</div>")
+    cat("</details>")
+  },
+  list(pager=function(files, header, title, delete.file) {
+    on.exit({
+      unlink(files)
+    })
+    cat(paste(c("<pre>",purrr::reduce(purrr::map(files, function(file) {
+      # gsub("</?u>","_",gsub("</u>( *)<u>","\\1",
+      gsub("_\b(.)", "<u>\\1</u>", readLines(file))
+      # ))
+    }), function(x, y) c(x,"\n\n\n",y)), "</pre>"), collapse="\n"))
+  })
+)
+```
 
 ```{r}
 ggplot(snapshots %>% filter(!latest),
@@ -421,7 +478,7 @@ rf <- arx_forecaster(
       `fb-survey` = c(0:7, 14)
     ),
     levels = c(0.01, 0.025, 1:19/20, 0.975, 0.99), # 23 ForecastHub quantiles
-    quantile_by_key = "geo_value" # vary quantile forecasts by location
+    quantile_by_key = "geo_value" # vary noise model by location
   )
 )
 ```
@@ -445,8 +502,8 @@ r <- epi_recipe(edf) %>%
 f <- frosting() %>%
   layer_predict() %>%
   layer_threshold(.pred, lower = 0) %>% # predictions / intervals should be non-negative
-  layer_add_target_date(target_date = max(jhu$time_value) + 14) %>%
-  layer_add_forecast_date(forecast_date = max(jhu$time_value))
+  layer_add_target_date(target_date = max(edf$time_value) + 14) %>%
+  layer_add_forecast_date(forecast_date = max(edf$time_value))
 
 # Bundle up the preprocessor, training engine, and postprocessor
 # We use quantile regression
