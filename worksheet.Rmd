@@ -243,7 +243,6 @@ fcast <- arx_forecaster(
     # wrap in a list to differentiate (in the same order)
     lags = c(0, 7, 14),
     ahead = 14L, # try whatever you like
-    forecast_date = as.Date("2021-12-01"),
     # this should be > ahead + max(lags)
     # You'll actually have n_training - (ahead + max(lags)) observations
     # per location for training
@@ -263,11 +262,14 @@ fcast <- arx_forecaster(
 The warning here is because our data version is 1.5 years after the forecast date.
 So performance is likely better than it would be for a production forecast.
 
-Now, generate a plot for a few locations with the testing data as well.
+Now, generate a plot for a few locations with the testing data as well. The
+plotting code (hidden below), converts back to incident deaths.
+
+<details>
 
 ```{r plot-fun}
 plot_fcast <- function(fcasts, geos) {
-  dat <- dat %>% filter(geo_value %in% geos)
+  dat <- dat %>% filter(geo_value %in% geos) 
   fcasts <- fcasts$predictions %>% 
     filter(geo_value %in% geos) %>%
     pivot_quantiles(contains("distn"))
@@ -284,6 +286,10 @@ plot_fcast <- function(fcasts, geos) {
     labs(x = "Date", y = "Deaths per 1M inhabitants")
 }
 ```
+
+</details>
+
+
 
 ```{r make-the-plot, fig.align='center', fig.width=8, fig.height=6}
 selected_geos <- c("ca", "ut", "pa", "ga")
@@ -306,14 +312,15 @@ more_forecasts <- map(
     arx_args_list(
       lags = c(0, 7, 14),
       ahead = .x,
-      forecast_date = as.Date("2021-12-01"),
       levels = c(0.1, 0.25, 0.75, 0.9),
     )
   )$predictions) %>%
   bind_rows()
 ```
 
-```{r make-trajectory-plot, echo=FALSE, fig.align='center', fig.width=8, fig.height=6}
+
+<details>
+```{r make-trajectory-plot, echo=TRUE}
 plot_trajectory <- function(fcasts, geos) {
   dat <- dat %>% filter(geo_value %in% geos)
   fcasts <- fcasts %>%
@@ -337,7 +344,11 @@ plot_trajectory <- function(fcasts, geos) {
     theme(legend.position = "none") +
     labs(x = "Date", y = "Deaths per 1M inhabitants")
 }
+```
 
+</details>
+
+```{r make-traj-plot, fig.align='center', fig.width=8, fig.height=6}
 plot_trajectory(more_forecasts, selected_geos)
 ```
 
