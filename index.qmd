@@ -79,7 +79,42 @@ CSTE Workshop on Infectious Disease Forecasting --- 25 June 2023
 :::
 ::::
 
-## {data-background-image=`r xfun::base64_uri("delphi-intro-slides-for-cdc-webinar.svg")`}
+## What does Delphi do? {.smaller}
+
+
+:::: {.columns}
+::: {.column width="70%"}
+
+In a nutshell, we:
+
+* Create/maintain pipelines to data streams that reflect epidemic activity.
+  - PH reporting, 
+  - medical insurance claims, 
+  - medical device data, 
+  - app-based mobility data, 
+  - search queries, online surveys, etc.
+* Derive [informative signals]{.primary} and maintain repository with public API access.
+* Run operational [nowcasting]{.primary} and [forecasting]{.primary} systems
+* Develop [open-source software]{.primary} packages that support now/forecasting.
+* Innovate (do research) in the space of computational methods in these and related areas.
+:::
+
+::: {.column width="30%"}
+
+![](gfx/cmu.jpg){height="150px"}
+![](gfx/berkeley.jpg){height="150px"}
+
+With core members also at University of British Columbia, University of Southern
+California, and Stanford University.
+
+:::
+::::
+
+<!--
+
+## {background-image="gfx/delphi-intro-slides-for-cdc-webinar.svg" background-position="top"}
+
+-->
 
 ## Background
 
