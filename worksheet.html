@@ -518,10 +518,12 @@ examine nonlinear relationships. See <code>?epi_cor()</code>.</p>
 are many options to explore here, and we suggest you try!</p>
 <p>Finally, further down, we wrap it, to do multiple horizons
 simultaneously. That code takes 4x as long to run. This is not a problem
-for this example (the whole markdown compiles in &lt; 10 seconds) but if
+for this example (the whole markdown compiles in &lt; 5 seconds) but if
 you try a different engine (like <code>&quot;stan&quot;</code>), it could take a
 really long time.</p>
-<p>Below is some code to produce a forecast for 2 weeks ahead.</p>
+<p>Below is some code to produce a forecast for 2 weeks ahead. To get
+the target (total deaths over the previous week), we would simply undo
+the population normalization (not shown).</p>
 <pre class="r"><code>library(parsnip)
 fcast &lt;- arx_forecaster(
   epi_data = training,

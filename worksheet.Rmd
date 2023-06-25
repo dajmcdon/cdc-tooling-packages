@@ -236,11 +236,13 @@ options to explore here, and we suggest you try!
 
 Finally, further down, we wrap it, to do multiple horizons simultaneously.
 That code takes 4x as long to run. This is not a problem for this example
-(the whole markdown compiles in < 10 seconds)
+(the whole markdown compiles in < 5 seconds)
 but if you try a different engine (like `"stan"`), it could take a really 
 long time.
 
-Below is some code to produce a forecast for 2 weeks ahead.
+Below is some code to produce a forecast for 2 weeks ahead. To get the target
+(total deaths over the previous week), we would simply undo the population 
+normalization (not shown).
 
 ```{r forecast-1-horizon}
 
