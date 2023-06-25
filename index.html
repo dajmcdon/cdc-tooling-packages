@@ -8,7 +8,7 @@
 <link href="index_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="index_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.3.353">
+  <meta name="generator" content="quarto-99.9.9">
 
   <title>index</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -222,7 +222,8 @@
   }
 
   .callout.callout-titled .callout-body > .callout-content > :last-child {
-    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0;
   }
 
   .callout.callout-titled .callout-icon::before {
@@ -453,7 +454,7 @@
 <li class="fragment">General EDA for panel data</li>
 <li class="fragment">Calculate rolling statistics</li>
 <li class="fragment">Fill / impute gaps</li>
-<li class="fragment">Examine correlations</li>
+<li class="fragment">Examine correlations, growth rates</li>
 <li class="fragment">Store revision history smartly</li>
 <li class="fragment">Inspect revision patterns</li>
 <li class="fragment">Find / correct outliers</li>
@@ -463,7 +464,7 @@
 <section id="epi_df-snapshot-of-a-data-set" class="slide level2">
 <h2><code>epi_df</code>: snapshot of a data set</h2>
 <ul>
-<li>a tibble required columns, <code>geo_value</code> and <code>time_value</code>.</li>
+<li>a tibble; requires columns <code>geo_value</code> and <code>time_value</code>.</li>
 <li>arbitrary additional columns containing <span class="primary">measured values</span></li>
 <li>additional <span class="primary">keys</span> to index (<code>age_group</code>, <code>ethnicity</code>, etc.)</li>
 </ul>
@@ -488,7 +489,7 @@
 <pre><code>An `epi_df` object, 20,496 x 4 with metadata:
 * geo_type  = state
 * time_type = day
-* as_of     = 2022-05-31 12:08:25.791826
+* as_of     = 2022-05-31 12:08:25
 
 # A tibble: 20,496 × 4
    geo_value time_value case_rate death_rate
@@ -531,7 +532,7 @@
 <ul>
 <li>full version history of a data set</li>
 <li>acts like a bunch of <code>epi_df</code>s — but stored <span class="primary">compactly</span></li>
-<li>Allows similar funtionality as <code>epi_df</code> but using only <span class="primary">data that would have been available at the time</span></li>
+<li>allows similar funtionality as <code>epi_df</code> but using only <span class="primary">data that would have been available at the time</span></li>
 </ul>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
@@ -694,7 +695,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 </section>
 <section id="adjust-lots-of-built-in-options" class="slide level2">
 <h2>Adjust lots of built-in options</h2>
-<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-14_0a58b9776dcbfba88cb0d12ad825e261">
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-14_e4fe90a1a6e341dc445b8eed82d2e311">
 <div class="sourceCode cell-code" id="cb6" data-code-line-numbers="|4|5|7|8-12|13|14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>rf <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(</span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="at">epi_data =</span> edf, </span>
 <span id="cb6-3"><a href="#cb6-3"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>, </span>
@@ -708,7 +709,7 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
 <span id="cb6-11"><a href="#cb6-11"></a>      <span class="st">`</span><span class="at">fb-survey</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">7</span>, <span class="dv">14</span>)</span>
 <span id="cb6-12"><a href="#cb6-12"></a>    ),</span>
 <span id="cb6-13"><a href="#cb6-13"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.025</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">19</span><span class="sc">/</span><span class="dv">20</span>, <span class="fl">0.975</span>, <span class="fl">0.99</span>), <span class="co"># 23 ForecastHub quantiles</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a>    <span class="at">quantile_by_key =</span> <span class="st">"geo_value"</span> <span class="co"># vary quantile forecasts by location</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a>    <span class="at">quantile_by_key =</span> <span class="st">"geo_value"</span> <span class="co"># vary noise model by location</span></span>
 <span id="cb6-15"><a href="#cb6-15"></a>  )</span>
 <span id="cb6-16"><a href="#cb6-16"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1166,10 +1167,9 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
         // clear code selection
         e.clearSelection();
       });
-      function tippyHover(el, contentFn) {
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
         const config = {
           allowHTML: true,
-          content: contentFn,
           maxWidth: 500,
           delay: 100,
           arrow: false,
@@ -1179,8 +1179,17 @@ nonmissing + duplications of the most recent non-<code>NA</code> values are late
           interactive: true,
           interactiveBorder: 10,
           theme: 'light-border',
-          placement: 'bottom-start'
+          placement: 'bottom-start',
         };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
           config['offset'] = [0,0];
           config['maxWidth'] = 700;
         window.tippy(el, config); 

@@ -115,7 +115,7 @@ flowchart LR
 * General EDA for panel data
 * Calculate rolling statistics
 * Fill / impute gaps
-* Examine correlations
+* Examine correlations, growth rates
 * Store revision history smartly
 * Inspect revision patterns
 * Find / correct outliers
@@ -124,7 +124,7 @@ flowchart LR
 
 ## `epi_df`: snapshot of a data set
 
-* a tibble required columns, `geo_value` and `time_value`.
+* a tibble; requires columns `geo_value` and `time_value`.
 * arbitrary additional columns containing [measured values]{.primary}
 * additional [keys]{.primary} to index (`age_group`, `ethnicity`, etc.)
 
@@ -195,7 +195,7 @@ ggplot(edf, aes(x = time_value, y = gr_cases)) +
 
 * full version history of a data set
 * acts like a bunch of `epi_df`s --- but stored [compactly]{.primary}
-* Allows similar funtionality as `epi_df` but using only [data that would have been available at the time]{.primary}
+* allows similar funtionality as `epi_df` but using only [data that would have been available at the time]{.primary}
 
 ::: {.callout-note}
 ## Revisions
@@ -421,7 +421,7 @@ rf <- arx_forecaster(
       `fb-survey` = c(0:7, 14)
     ),
     levels = c(0.01, 0.025, 1:19/20, 0.975, 0.99), # 23 ForecastHub quantiles
-    quantile_by_key = "geo_value" # vary quantile forecasts by location
+    quantile_by_key = "geo_value" # vary noise model by location
   )
 )
 ```
