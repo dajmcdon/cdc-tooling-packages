@@ -445,8 +445,8 @@ r <- epi_recipe(edf) %>%
 f <- frosting() %>%
   layer_predict() %>%
   layer_threshold(.pred, lower = 0) %>% # predictions / intervals should be non-negative
-  layer_add_target_date(target_date = max(jhu$time_value) + 14) %>%
-  layer_add_forecast_date(forecast_date = max(jhu$time_value))
+  layer_add_target_date(target_date = max(edf$time_value) + 14) %>%
+  layer_add_forecast_date(forecast_date = max(edf$time_value))
 
 # Bundle up the preprocessor, training engine, and postprocessor
 # We use quantile regression
