@@ -112,7 +112,7 @@ California, and Stanford University.
 
 <!--
 
-## {background-image="gfx/delphi-intro-slides-for-cdc-webinar.svg" background-position="top"}
+## {background-image="gfx/delphi-intro-slide.svg" background-position="top"}
 
 -->
 
