@@ -1,7 +1,7 @@
 ---
 format: 
   revealjs:
-    footer: "Packages for forecasting --- [cmu-delphi.github.io/cste-forecast-workshop-2023]{.smaller}"
+    footer: "Packages for signal processing and forecasting"
     logo: "gfx/delphi.jpg"
     embed-resources: false
     chalkboard: true
@@ -35,6 +35,7 @@ snapshots_all <- map_dfr(versions, function(v) {
   mutate(latest = version == self_max)
 snapshots <- snapshots_all %>% 
   filter(geo_value %in% c("ca", "fl"))
+theme_set(theme_bw(base_size = 16))
 ```
 
 ```{r}
@@ -72,49 +73,13 @@ ggplot(snapshots_all %>%
 
 <br>
 
-#### Daniel J. McDonald and Logan C. Brooks
+#### Daniel J. McDonald, Ryan J. Tibshirani, and Logan C. Brooks
 #### and CMU's Delphi Group
 
-CSTE Workshop on Infectious Disease Forecasting --- 25 June 2023
+CDC Flu Site Visit --- 19 July 2023
 :::
 ::::
 
-## What does Delphi do? {.smaller}
-
-
-:::: {.columns}
-::: {.column width="70%"}
-
-In a nutshell, we:
-
-* Create/maintain pipelines to data streams that reflect epidemic activity.
-  - PH reporting, 
-  - medical insurance claims, 
-  - medical device data, 
-  - app-based mobility data, 
-  - search queries, online surveys, etc.
-* Derive [informative signals]{.primary} and maintain repository with public API access.
-* Run operational [nowcasting]{.primary} and [forecasting]{.primary} systems
-* Develop [open-source software]{.primary} packages that support now/forecasting.
-* Innovate (do research) in the space of computational methods in these and related areas.
-:::
-
-::: {.column width="30%"}
-
-![](gfx/cmu.jpg){height="150px"}
-![](gfx/berkeley.jpg){height="150px"}
-
-With core members also at University of British Columbia, University of Southern
-California, and Stanford University.
-
-:::
-::::
-
-<!--
-
-## {background-image="gfx/delphi-intro-slide.svg" background-position="top"}
-
--->
 
 ## Background
 
@@ -221,6 +186,7 @@ cor14 <- epi_cor(edf, case_rate, death_rate, cor_by = time_value, dt1 = -14)
 
 ```{r}
 #| fig-align: center
+#| fig-format: svg
 rbind(
   cor0 %>% mutate(lag = 0),
   cor14 %>% mutate(lag = 14)
@@ -229,11 +195,43 @@ rbind(
   ggplot(aes(x = time_value, y = cor)) +
   geom_hline(yintercept = 0, size = 1.5) +
   geom_line(aes(color = lag), size = 1.5) +
-  theme_bw(16) +
   scale_color_brewer(palette = "Set1") +
   scale_x_date(minor_breaks = "month", date_labels = "%b %Y") +
   labs(x = "Date", y = "Correlation", col = "Lag")
 ```
+
+## Outlier detection and correction
+
+```{r}
+ny <- jhu_csse_daily_subset %>%
+  filter(geo_value == "ny") %>%
+  select(time_value, geo_value, cases)
+```
+
+```{r}
+#| echo: true
+ny <- ny %>% mutate(outliers = detect_outlr_stl(time_value, cases))
+```
+
+```{r}
+#| fig-align: center
+#| fig-format: svg
+ggplot(ny, aes(x = time_value)) + 
+  geom_ribbon(
+    aes(ymin = outliers$lower / 1000, ymax = outliers$upper / 1000), 
+    fill = "lightgrey") +
+  geom_line(aes(y = cases / 1000), color = primary) + 
+  geom_point(
+    data = function(df) df %>% filter(cases != outliers$replacement),
+    aes(y = outliers$replacement / 1000), color = tertiary, size = 3) +
+  scale_y_continuous(
+    limits = c(0, NA), 
+    expand = expansion(mult = c(0, 0.05))) +
+  scale_x_date(date_labels = "%b %Y") +
+  labs(x = "", y = "incident cases\n in New York (1000's)")
+```
+
+
 
 
 ## Sliding examples on `epi_df`
@@ -248,11 +246,11 @@ edf <- filter(edf, geo_value %in% c("ut", "ca")) %>%
 
 ```{r}
 #| fig-align: center
+#| fig-format: svg
 ggplot(edf, aes(x = time_value, y = gr_cases)) +
   geom_hline(yintercept = 0, size = 1.5) +
   geom_line(aes(col = geo_value), size = 1.5) +
   geom_hline(yintercept = 0) +
-  theme_bw(16) +
   scale_y_continuous(labels = scales::label_percent()) +
   scale_color_manual(values = c(3, 6)) +
   scale_x_date(minor_breaks = "month", date_labels = "%b %Y") +
@@ -302,6 +300,8 @@ withr::with_options(
 ```
 
 ```{r}
+#| fig-align: center
+#| fig-format: svg
 ggplot(snapshots %>% filter(!latest),
             aes(x = time_value, y = percent_cli)) +  
   geom_line(aes(color = factor(version))) + 
@@ -309,7 +309,6 @@ ggplot(snapshots %>% filter(!latest),
   facet_wrap(~ geo_value, scales = "free_y", nrow = 1) +
   scale_x_date(minor_breaks = "month", date_labels = "%b %Y") +
   labs(x = "", y = "% of doctor's visits with\n Covid-like illness") + 
-  theme_bw(base_size = 24) +
   scale_color_viridis_d(option = "B", end = .8) +
   theme(legend.position = "none") +
   geom_line(data = snapshots %>% filter(latest),
@@ -369,7 +368,10 @@ hhs_flu_hosp_archive %>%
 
 ## Latency investigation, > 2 days
 
-```{r, dev = "png"}
+```{r}
+#| fig-format: jpeg
+#| fig-align: center
+#| dev: jpeg
 hhs_na0_latency <- readRDS(here::here("data", "hhs_na0_latency.rds"))
 hhs_na0_latency %>%
   mutate(na0_latency = case_when(
@@ -556,9 +558,11 @@ preds <- trained_ewf %>% predict(new_data = latest)
 
 ## Visualize a result for 1 forecast date, 1 location
 
-```{r, fig.align='center', fig.width=10}
+```{r}
 #| echo: true
 #| code-fold: true
+#| fig-align: center
+#| fig-format: svg
 fd <- as.Date("2021-11-30")
 geos <- c("ut", "ca")
 
@@ -612,86 +616,5 @@ ggplot(preds) +
 
 
 
-## Packages are under active development {.smaller}
-
-
-### Thanks:
-
-```{r qr-codes}
-#| include: false
-#| fig-format: png
-# Code to generate QR codes to link to any external sources
-qrdat <- function(text, ecl = c("L", "M", "Q", "H")) {
-  x <- qrcode::qr_code(text, ecl)
-  n <- nrow(x)
-  s <- seq_len(n)
-  tib <- tidyr::expand_grid(x = s, y = rev(s))
-  tib$z <- c(x)
-  tib
-}
-qr1 <- qrdat("https://cmu-delphi.github.io/epiprocess/")
-qr2 <- qrdat("https://cmu-delphi.github.io/epipredict/")
-qr3 <- qrdat("https://cmu-delphi.github.io/delphi-tooling-book/")
-qr4 <- qrdat("https://cmu-delphi.github.io/cste-forecast-workshop-2023/")
-plot_qr <- function(dat, title, fill = "black") {
-  ggplot(dat, aes(x, y, fill = z)) +
-    geom_raster() +
-    ggtitle(title) +
-    coord_equal(expand = FALSE) +
-    scale_fill_manual(values = c("white", fill), guide = "none") +
-    theme_void(base_size = 18) +
-    theme(plot.title = element_text(hjust = .5, size = 30))
-}
-ggsave(plot = plot_qr(qr1, "{epipredict}"), "gfx/qr-epipredict.png")
-ggsave(plot = plot_qr(qr2, "{epiprocess}"), "gfx/qr-epiprocess.png")
-ggsave(plot = plot_qr(qr3, "Tooling book"), "gfx/qr-tooling-book.png")
-ggsave(plot = plot_qr(qr4, "This talk"), "gfx/qr-this-talk.png")
-```
-
-:::: {.columns}
-::: {.column width="50%"}
-- The whole [CMU Delphi Team](https://delphi.cmu.edu/about/team/) (across many institutions)
-- Optum/UnitedHealthcare, Change Healthcare.
-- Google, Facebook, Amazon Web Services.
-- Quidel, SafeGraph, Qualtrics.
-- Centers for Disease Control and Prevention.
-- Council of State and Territorial Epidemiologists
-- National Sciences and Engineering Research Council of Canada
-:::
-
-::: {.column width="50%"}
-
-```{r, dev='png'}
-cowplot::plot_grid(
-  plot_qr(qr1, "{epipredict}"),
-  plot_qr(qr2, "{epiprocess}"),
-  plot_qr(qr3, "Tooling book"),
-  plot_qr(qr4, "This talk"),
-  nrow = 2
-)
-```
-
-:::
-
-::::
-
-::: {layout-row=1 fig-align="center"}
-![](gfx/delphi.jpg){height="100px"}
-![](gfx/berkeley.jpg){height="100px"}
-![](gfx/cmu.jpg){height="100px"}
-![](gfx/ubc.jpg){width="250px"}
-![](gfx/usc.jpg){width="250px"}
-![](gfx/stanford.jpg){width="250px"}
-:::
-
-## Software demo / worksheet
-
-::: {.r-fit-text}
-
-<https://github.com/cmu-delphi/cste-forecast-workshop-2023/>
-
-:::
-
-
-![](gfx/qr-this-talk.png){.r-stretch}
+# Questions?
 
